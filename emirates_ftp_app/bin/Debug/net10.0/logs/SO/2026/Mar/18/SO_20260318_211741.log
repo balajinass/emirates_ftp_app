@@ -1,0 +1,6 @@
+2026-03-18 21:17:54.7124|INFO|emirates_ftp_app.Program|Application started for module SO 
+2026-03-18 21:18:25.3116|ERROR|emirates_ftp_app.Program|Unhandled exception for module SO System.InvalidOperationException: Connection string 'NassConnection' not found.
+   at emirates_ftp_app.Program.<>c.<Main>b__0_2(HostBuilderContext context, IServiceCollection services) in E:\Newage\Projects\Pre-Production\Core\Console\emirates_ftp_app\emirates_ftp_app\Program.cs:line 86
+   at Microsoft.Extensions.Hosting.HostBuilder.InitializeServiceProvider()
+   at Microsoft.Extensions.Hosting.HostBuilder.Build()
+   at emirates_ftp_app.Program.Main(String[] args) in E:\Newage\Projects\Pre-Production\Core\Console\emirates_ftp_app\emirates_ftp_app\Program.cs:line 51

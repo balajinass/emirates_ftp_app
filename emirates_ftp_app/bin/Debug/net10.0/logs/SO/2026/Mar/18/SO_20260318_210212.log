@@ -1,0 +1,10 @@
+2026-03-18 21:02:27.0513|INFO|emirates_ftp_app.Program|Application started for module SO 
+2026-03-18 21:03:14.3869|ERROR|emirates_ftp_app.Program|Unhandled exception for module SO System.IO.FileNotFoundException: The configuration file 'appsettings.json' was not found and is not optional. The expected physical path was 'E:\Newage\Projects\Pre-Production\Core\Console\emirates_ftp_app\emirates_ftp_app\bin\Debug\net10.0\appsettings.json'.
+   at Microsoft.Extensions.Configuration.FileConfigurationProvider.HandleException(ExceptionDispatchInfo info)
+   at Microsoft.Extensions.Configuration.FileConfigurationProvider.Load(Boolean reload)
+   at Microsoft.Extensions.Configuration.FileConfigurationProvider.Load()
+   at Microsoft.Extensions.Configuration.ConfigurationRoot..ctor(IList`1 providers)
+   at Microsoft.Extensions.Configuration.ConfigurationBuilder.Build()
+   at Microsoft.Extensions.Hosting.HostBuilder.InitializeAppConfiguration()
+   at Microsoft.Extensions.Hosting.HostBuilder.Build()
+   at emirates_ftp_app.Program.Main(String[] args) in E:\Newage\Projects\Pre-Production\Core\Console\emirates_ftp_app\emirates_ftp_app\Program.cs:line 51

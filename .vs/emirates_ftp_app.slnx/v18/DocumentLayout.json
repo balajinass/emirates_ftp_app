@@ -1,0 +1,150 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\Newage\\Projects\\Pre-Production\\Core\\Console\\emirates_ftp_app\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{32BA4047-F3A1-41D1-A114-A5B953417F55}|emirates_ftp_app\\emirates_ftp_app.csproj|e:\\newage\\projects\\pre-production\\core\\console\\emirates_ftp_app\\emirates_ftp_app\\middleware\\inbound\\salesorder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32BA4047-F3A1-41D1-A114-A5B953417F55}|emirates_ftp_app\\emirates_ftp_app.csproj|solutionrelative:emirates_ftp_app\\middleware\\inbound\\salesorder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32BA4047-F3A1-41D1-A114-A5B953417F55}|emirates_ftp_app\\emirates_ftp_app.csproj|e:\\newage\\projects\\pre-production\\core\\console\\emirates_ftp_app\\emirates_ftp_app\\data\\primarydbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32BA4047-F3A1-41D1-A114-A5B953417F55}|emirates_ftp_app\\emirates_ftp_app.csproj|solutionrelative:emirates_ftp_app\\data\\primarydbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32BA4047-F3A1-41D1-A114-A5B953417F55}|emirates_ftp_app\\emirates_ftp_app.csproj|e:\\newage\\projects\\pre-production\\core\\console\\emirates_ftp_app\\emirates_ftp_app\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32BA4047-F3A1-41D1-A114-A5B953417F55}|emirates_ftp_app\\emirates_ftp_app.csproj|solutionrelative:emirates_ftp_app\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32BA4047-F3A1-41D1-A114-A5B953417F55}|emirates_ftp_app\\emirates_ftp_app.csproj|e:\\newage\\projects\\pre-production\\core\\console\\emirates_ftp_app\\emirates_ftp_app\\repository\\nassrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32BA4047-F3A1-41D1-A114-A5B953417F55}|emirates_ftp_app\\emirates_ftp_app.csproj|solutionrelative:emirates_ftp_app\\repository\\nassrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32BA4047-F3A1-41D1-A114-A5B953417F55}|emirates_ftp_app\\emirates_ftp_app.csproj|e:\\newage\\projects\\pre-production\\core\\console\\emirates_ftp_app\\emirates_ftp_app\\data\\nassdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32BA4047-F3A1-41D1-A114-A5B953417F55}|emirates_ftp_app\\emirates_ftp_app.csproj|solutionrelative:emirates_ftp_app\\data\\nassdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32BA4047-F3A1-41D1-A114-A5B953417F55}|emirates_ftp_app\\emirates_ftp_app.csproj|e:\\newage\\projects\\pre-production\\core\\console\\emirates_ftp_app\\emirates_ftp_app\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{32BA4047-F3A1-41D1-A114-A5B953417F55}|emirates_ftp_app\\emirates_ftp_app.csproj|solutionrelative:emirates_ftp_app\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32BA4047-F3A1-41D1-A114-A5B953417F55}|emirates_ftp_app\\emirates_ftp_app.csproj|e:\\newage\\projects\\pre-production\\core\\console\\emirates_ftp_app\\emirates_ftp_app\\middleware\\ftpclientcall.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32BA4047-F3A1-41D1-A114-A5B953417F55}|emirates_ftp_app\\emirates_ftp_app.csproj|solutionrelative:emirates_ftp_app\\middleware\\ftpclientcall.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 222,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "E:\\Newage\\Projects\\Pre-Production\\Core\\Console\\emirates_ftp_app\\emirates_ftp_app\\Program.cs",
+              "RelativeDocumentMoniker": "emirates_ftp_app\\Program.cs",
+              "ToolTip": "E:\\Newage\\Projects\\Pre-Production\\Core\\Console\\emirates_ftp_app\\emirates_ftp_app\\Program.cs",
+              "RelativeToolTip": "emirates_ftp_app\\Program.cs",
+              "ViewState": "AgIAAFYAAAAAAAAAAAAQwHIAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-17T19:27:32.479Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PrimaryDbContext.cs",
+              "DocumentMoniker": "E:\\Newage\\Projects\\Pre-Production\\Core\\Console\\emirates_ftp_app\\emirates_ftp_app\\Data\\PrimaryDbContext.cs",
+              "RelativeDocumentMoniker": "emirates_ftp_app\\Data\\PrimaryDbContext.cs",
+              "ToolTip": "E:\\Newage\\Projects\\Pre-Production\\Core\\Console\\emirates_ftp_app\\emirates_ftp_app\\Data\\PrimaryDbContext.cs",
+              "RelativeToolTip": "emirates_ftp_app\\Data\\PrimaryDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-18T19:26:40.364Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "FtpClientCall.cs",
+              "DocumentMoniker": "E:\\Newage\\Projects\\Pre-Production\\Core\\Console\\emirates_ftp_app\\emirates_ftp_app\\Middleware\\FtpClientCall.cs",
+              "RelativeDocumentMoniker": "emirates_ftp_app\\Middleware\\FtpClientCall.cs",
+              "ToolTip": "E:\\Newage\\Projects\\Pre-Production\\Core\\Console\\emirates_ftp_app\\emirates_ftp_app\\Middleware\\FtpClientCall.cs",
+              "RelativeToolTip": "emirates_ftp_app\\Middleware\\FtpClientCall.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-18T19:50:10.424Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "nassRepository.cs",
+              "DocumentMoniker": "E:\\Newage\\Projects\\Pre-Production\\Core\\Console\\emirates_ftp_app\\emirates_ftp_app\\Repository\\nassRepository.cs",
+              "RelativeDocumentMoniker": "emirates_ftp_app\\Repository\\nassRepository.cs",
+              "ToolTip": "E:\\Newage\\Projects\\Pre-Production\\Core\\Console\\emirates_ftp_app\\emirates_ftp_app\\Repository\\nassRepository.cs",
+              "RelativeToolTip": "emirates_ftp_app\\Repository\\nassRepository.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAADQAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-18T19:59:16.43Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "NassDbContext.cs",
+              "DocumentMoniker": "E:\\Newage\\Projects\\Pre-Production\\Core\\Console\\emirates_ftp_app\\emirates_ftp_app\\Data\\NassDbContext.cs",
+              "RelativeDocumentMoniker": "emirates_ftp_app\\Data\\NassDbContext.cs",
+              "ToolTip": "E:\\Newage\\Projects\\Pre-Production\\Core\\Console\\emirates_ftp_app\\emirates_ftp_app\\Data\\NassDbContext.cs",
+              "RelativeToolTip": "emirates_ftp_app\\Data\\NassDbContext.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAowDIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-18T20:00:16.316Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SalesOrder.cs",
+              "DocumentMoniker": "E:\\Newage\\Projects\\Pre-Production\\Core\\Console\\emirates_ftp_app\\emirates_ftp_app\\Middleware\\Inbound\\SalesOrder.cs",
+              "RelativeDocumentMoniker": "emirates_ftp_app\\Middleware\\Inbound\\SalesOrder.cs",
+              "ToolTip": "E:\\Newage\\Projects\\Pre-Production\\Core\\Console\\emirates_ftp_app\\emirates_ftp_app\\Middleware\\Inbound\\SalesOrder.cs",
+              "RelativeToolTip": "emirates_ftp_app\\Middleware\\Inbound\\SalesOrder.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAnwCYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-18T20:48:34.574Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "E:\\Newage\\Projects\\Pre-Production\\Core\\Console\\emirates_ftp_app\\emirates_ftp_app\\appsettings.json",
+              "RelativeDocumentMoniker": "emirates_ftp_app\\appsettings.json",
+              "ToolTip": "E:\\Newage\\Projects\\Pre-Production\\Core\\Console\\emirates_ftp_app\\emirates_ftp_app\\appsettings.json",
+              "RelativeToolTip": "emirates_ftp_app\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-03-18T20:58:23.787Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
