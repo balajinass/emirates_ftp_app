@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace emirates_ftp_app.Model.Nass
 {
     public class web_wms_edi_config_model
     {
+        [Key]
+        public string? PROJECT_ID { get; set; }
         public string? CREATE_USER { get; set; }
         public string? CREATE_DATE { get; set; }
         public string? RUN_USER { get; set; }
-        public string? RUN_DATE { get; set; }
-        public string? PROJECT_ID { get; set; }
+        public string? RUN_DATE { get; set; }        
         public string? PROJECT_NAME { get; set; }
         public string? SAAS_ID { get; set; }
         public string? COMPANY_CODE { get; set; }
@@ -29,16 +31,18 @@ namespace emirates_ftp_app.Model.Nass
         public string? ERROR_EMAIL { get; set; }
         public string? LOV_STATUS { get; set; }
         public List<web_wms_edi_module_config_model>? MODULES { get; set; }
+        public List<web_wms_edi_outbound_config>? OUTBOUND { get; set; }
     }
 
     public class web_wms_edi_module_config_model
     {
+        [Key]
+        public string? SL_NO { get; set; }
         public string? CREATE_USER { get; set; }
         public string? CREATE_DATE { get; set; }
         public string? RUN_USER { get; set; }
         public string? RUN_DATE { get; set; }
-        public string? PROJECT_ID { get; set; }
-        public string? SL_NO { get; set; }
+        public string? PROJECT_ID { get; set; }        
         public string? MODULE_NAME { get; set; }
         public string? FTP_FILE_PATH { get; set; }
         public string? FTP_FILE_BACKUP_PATH { get; set; }
@@ -46,6 +50,21 @@ namespace emirates_ftp_app.Model.Nass
         public string? LOCAL_FILE_PATH { get; set; }
         public string? LOCAL_FILE_BACKUP_PATH { get; set; }
         public string? LOCAL_FILE_ERROR_PATH { get; set; }
+        public string? LOV_STATUS { get; set; }
+    }
+
+    public class web_wms_edi_outbound_config
+    {
+        public string? CREATE_USER { get; set; }        
+        public DateTime CREATE_DATE { get; set; }      
+        public string? RUN_USER { get; set; }           
+        public DateTime RUN_DATE { get; set; }         
+        public string? PROJECT_ID { get; set; }        
+        public string? SL_NO { get; set; }            
+        public string? FILE_TYPE { get; set; }          
+        public string? MODULE_NAME { get; set; }        
+        public string? FTP_FILE_PATH { get; set; }      
+        public string? LOCAL_FILE_PATH { get; set; }    
         public string? LOV_STATUS { get; set; }
     }
 }

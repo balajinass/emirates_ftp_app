@@ -1,0 +1,4 @@
+PrimaryCompany,Warehouse,ShippedPartCode,SupplierCode,ShippingModeCode,PurchaseOrderTypeCode,PartTypeCode,PurchaseOrderNumber,PurchaseOrderLineNumber,BillingUOMCode,SupplierInvoiceNo,SupplierInvoiceDate,ShippedQuantityInBillingUOM,ExpiryDate,ManufacturingDate,SerialNo,BatchNo,EstimatedTimeOfArrival,BillOfLadingOrAirwayBillNo
+AURA,UB1,21122,800,AIR,PO,GEN,NULL,1,PCS,UB1O/2438,26/03/2025,13.0,,,,,26/03/2025,
+AURA,UB1,21123,800,AIR,PO,GEN,NULL,2,PCS,UB1O/2438,26/03/2025,24.0,,,,,26/03/2025,
+AURA,UB1,21124,800,AIR,PO,GEN,NULL,3,PCS,UB1O/2438,26/03/2025,30.0,,,,,26/03/2025,

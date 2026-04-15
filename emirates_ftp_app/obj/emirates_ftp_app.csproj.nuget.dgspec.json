@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Newage\\Projects\\Github\\Core\\console\\emirates_ftp_app\\emirates_ftp_app\\emirates_ftp_app.csproj": {}
+    "D:\\Integration Source\\emirates_ftp_app\\emirates_ftp_app\\emirates_ftp_app.csproj": {}
   },
   "projects": {
-    "E:\\Newage\\Projects\\Github\\Core\\console\\emirates_ftp_app\\emirates_ftp_app\\emirates_ftp_app.csproj": {
+    "D:\\Integration Source\\emirates_ftp_app\\emirates_ftp_app\\emirates_ftp_app.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Newage\\Projects\\Github\\Core\\console\\emirates_ftp_app\\emirates_ftp_app\\emirates_ftp_app.csproj",
+        "projectUniqueName": "D:\\Integration Source\\emirates_ftp_app\\emirates_ftp_app\\emirates_ftp_app.csproj",
         "projectName": "emirates_ftp_app",
-        "projectPath": "E:\\Newage\\Projects\\Github\\Core\\console\\emirates_ftp_app\\emirates_ftp_app\\emirates_ftp_app.csproj",
-        "packagesPath": "C:\\Users\\Balaji\\.nuget\\packages\\",
-        "outputPath": "E:\\Newage\\Projects\\Github\\Core\\console\\emirates_ftp_app\\emirates_ftp_app\\obj\\",
+        "projectPath": "D:\\Integration Source\\emirates_ftp_app\\emirates_ftp_app\\emirates_ftp_app.csproj",
+        "packagesPath": "C:\\Users\\Ashokananth\\.nuget\\packages\\",
+        "outputPath": "D:\\Integration Source\\emirates_ftp_app\\emirates_ftp_app\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Balaji\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Ashokananth\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -45,7 +45,7 @@
           "auditLevel": "low",
           "auditMode": "all"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
         "net10.0": {
@@ -58,6 +58,14 @@
             "FluentFTP": {
               "target": "Package",
               "version": "[53.0.2, )"
+            },
+            "FluentFTP.GnuTLS": {
+              "target": "Package",
+              "version": "[1.0.38, )"
+            },
+            "FluentFTP.Logging": {
+              "target": "Package",
+              "version": "[1.0.0, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -86,6 +94,10 @@
             "NLog": {
               "target": "Package",
               "version": "[6.1.1, )"
+            },
+            "NLog.Config": {
+              "target": "Package",
+              "version": "[4.7.15, )"
             },
             "NLog.Extensions.Logging": {
               "target": "Package",
@@ -116,7 +128,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",

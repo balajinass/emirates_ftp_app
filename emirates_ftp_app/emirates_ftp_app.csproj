@@ -8,6 +8,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="EmailRepository\**" />
+    <Compile Remove="Model\Email\**" />
+    <EmbeddedResource Remove="EmailRepository\**" />
+    <EmbeddedResource Remove="Model\Email\**" />
+    <None Remove="EmailRepository\**" />
+    <None Remove="Model\Email\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\EmailDbContext.cs" />
+    <Compile Remove="Middleware\FtpClientCall.cs" />
+    <Compile Remove="Repository\FtpConnection\IFtpConnection.cs" />
+    <Compile Remove="Repository\nassRepository.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="appsettings.json" />
   </ItemGroup>
 
@@ -20,6 +36,8 @@
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="33.1.0" />
     <PackageReference Include="FluentFTP" Version="53.0.2" />
+    <PackageReference Include="FluentFTP.GnuTLS" Version="1.0.38" />
+    <PackageReference Include="FluentFTP.Logging" Version="1.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.5">
       <PrivateAssets>all</PrivateAssets>
@@ -32,13 +50,14 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.5" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
     <PackageReference Include="NLog" Version="6.1.1" />
+    <PackageReference Include="NLog.Config" Version="4.7.15" />
     <PackageReference Include="NLog.Extensions.Logging" Version="6.1.2" />
     <PackageReference Include="Oracle.EntityFrameworkCore" Version="10.23.26100" />
     <PackageReference Include="SSH.NET" Version="2025.1.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Model\Inbound\" />
+    <Folder Include="Model\Outbound\" />
     <Folder Include="Model\Outbound\" />
   </ItemGroup>
 

@@ -1,0 +1,5 @@
+Sno,PrimaryCompany,CostBucket,SalesOrderNo,SalesOrderLineNO,ExternalSoNo,OrderLineNo,ItemRef,CancellationQuantity,TransactionTime,FileStatus,Note,ShipToCode
+1,Aura,,,,A11D/24899,12,ELEVEN,3,"Sunday,January 25,2026",,,44402
+2,Aura,,,,A11D/24900,13,ELEVEN,4,23/09/2025,,,44403
+3,Aura,,,,A11D/24901,14,ELEVEN,5,"Sunday,January 25,2026",,,44404
+4,Aura,,,,A11D/24902,15,ELEVEN,6,"Saturday,February 14,2026",,,44405

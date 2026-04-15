@@ -1,24 +1,22 @@
 ﻿using emirates_ftp_app.Model.Nass;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace emirates_ftp_app.Data
 {
     internal class NassDbContext : DbContext
     {
         public NassDbContext(DbContextOptions<NassDbContext> options) : base(options) { }
-        public DbSet<web_wms_edi_config_model> web_wms_edi_config_model { get; set; }
+        public DbSet<web_wms_edi_config_model> WEB_WMS_EDI_CONFIG { get; set; }
+        public DbSet<web_wms_edi_module_config_model> WEB_WMS_EDI_MODULE_CONFIG { get; set; }
+        public DbSet<web_wms_edi_outbound_config> WEB_WMS_EDI_OUTBOUND_CONFIG { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            // WEB_WMS_EDI_CONFIG
             modelBuilder.Entity<web_wms_edi_config_model>(entity =>
             {
                 entity.ToTable("WEB_WMS_EDI_CONFIG");
-
-                entity.HasKey(e => e.PROJECT_ID);
+                entity.HasKey(e => e.PROJECT_ID); // primary key is required
 
                 entity.Property(e => e.CREATE_USER).HasColumnName("CREATE_USER");
                 entity.Property(e => e.CREATE_DATE).HasColumnName("CREATE_DATE");
@@ -45,15 +43,18 @@ namespace emirates_ftp_app.Data
 
                 entity.HasMany(e => e.MODULES)
                       .WithOne()
-                      .HasForeignKey(m => m.PROJECT_ID)
-                      .HasPrincipalKey(e => e.PROJECT_ID);
+                      .HasForeignKey(m => m.PROJECT_ID);
+
+                entity.HasMany(e => e.OUTBOUND)
+                      .WithOne() 
+                      .HasForeignKey(o => o.PROJECT_ID);
             });
 
+            // WEB_WMS_EDI_MODULE_CONFIG
             modelBuilder.Entity<web_wms_edi_module_config_model>(entity =>
             {
                 entity.ToTable("WEB_WMS_EDI_MODULE_CONFIG");
-
-                entity.HasKey(e => new { e.PROJECT_ID, e.SL_NO });
+                entity.HasKey(e => new { e.PROJECT_ID, e.SL_NO }); // composite key
 
                 entity.Property(e => e.CREATE_USER).HasColumnName("CREATE_USER");
                 entity.Property(e => e.CREATE_DATE).HasColumnName("CREATE_DATE");
@@ -70,6 +71,25 @@ namespace emirates_ftp_app.Data
                 entity.Property(e => e.LOCAL_FILE_ERROR_PATH).HasColumnName("LOCAL_FILE_ERROR_PATH");
                 entity.Property(e => e.LOV_STATUS).HasColumnName("LOV_STATUS");
             });
+
+            // WEB_WMS_EDI_OUTBOUND_CONFIG
+            modelBuilder.Entity<web_wms_edi_outbound_config>(entity =>
+            {
+                entity.ToTable("WEB_WMS_EDI_OUTBOUND_CONFIG");
+                entity.HasKey(e => e.SL_NO); // Or composite key if needed
+                entity.Property(e => e.CREATE_USER).HasColumnName("CREATE_USER");
+                entity.Property(e => e.CREATE_DATE).HasColumnName("CREATE_DATE");
+                entity.Property(e => e.RUN_USER).HasColumnName("RUN_USER");
+                entity.Property(e => e.RUN_DATE).HasColumnName("RUN_DATE");
+                entity.Property(e => e.PROJECT_ID).HasColumnName("PROJECT_ID");
+                entity.Property(e => e.FILE_TYPE).HasColumnName("FILE_TYPE");
+                entity.Property(e => e.MODULE_NAME).HasColumnName("MODULE_NAME");
+                entity.Property(e => e.FTP_FILE_PATH).HasColumnName("FTP_FILE_PATH");
+                entity.Property(e => e.LOCAL_FILE_PATH).HasColumnName("LOCAL_FILE_PATH");
+                entity.Property(e => e.LOV_STATUS).HasColumnName("LOV_STATUS");
+            });
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

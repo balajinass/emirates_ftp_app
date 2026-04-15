@@ -24,11 +24,11 @@ namespace emirates_ftp_app.Repository
 
             try
             {
-                listofConfig_ = await _nassDbContext.web_wms_edi_config_model
-                    .AsNoTracking()
-                    .Include(x => x.MODULES)
-                    .Where(x => x.LOV_STATUS == "DISPLAY")
-                    .ToListAsync();
+                //listofConfig_ = await _nassDbContext.WEB_WMS_EDI_MODULE_CONFIG
+                //    .AsNoTracking()
+                //    .Include(x => x.MODULES)
+                //    .Where(x => x.LOV_STATUS == "DISPLAY")
+                //    .ToListAsync();
 
                 //if (listofResponse_ != null && listofResponse_.Count > 0)
                 //{
