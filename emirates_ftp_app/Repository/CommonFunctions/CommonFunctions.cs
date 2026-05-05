@@ -148,10 +148,12 @@ namespace emirates_ftp_app.Repository.CommonFunctions
                 {
                     listofCsv_.Add(record);
                 }
+                Console.WriteLine($"ReadCsvFileforASN Completed");
             }
             catch (Exception ex)
             {
                 MyLogger.GetInstance().Error(ex.Message);
+                Console.Error.WriteLine($"Error -" + ex.Message);
             }
 
             return listofCsv_;

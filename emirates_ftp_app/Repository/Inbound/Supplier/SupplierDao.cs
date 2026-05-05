@@ -11,6 +11,7 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using static System.Net.WebRequestMethods;
 
 namespace emirates_ftp_app.Repository.Inbound.Supplier
 {
@@ -189,7 +190,8 @@ namespace emirates_ftp_app.Repository.Inbound.Supplier
                     parameters
                 );
 
-                MyLogger.GetInstance().Info("Procedure Executed Successfully - EL_PO_IMPORT");
+                MyLogger.GetInstance().Info("Procedure Executed Successfully - EL_SUPPLIER_IMPORT");
+                Console.WriteLine($"Procedure Executed Successfully - EL_SUPPLIER_IMPORT");
                 return true;
             }
             catch (Exception ex)

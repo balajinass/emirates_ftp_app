@@ -147,9 +147,9 @@ namespace emirates_ftp_app.Repository.Inbound.Asn
 
                         await context.WMS_EL_PO_IMPORT.AddAsync(entity);
                         iRow++;
-                    }
-
+                    }                    
                     int result = await context.SaveChangesAsync();
+                    Console.WriteLine($"Insert Completed in WMS_EL_PO_IMPORT");
                     bInsert = result > 0;
                 }
             }
@@ -190,6 +190,7 @@ namespace emirates_ftp_app.Repository.Inbound.Asn
                 );
 
                 MyLogger.GetInstance().Info("Procedure Executed Successfully - EL_PO_IMPORT");
+                Console.WriteLine($"Procedure Executed Successfully - EL_PO_IMPORT");
                 return true;
             }
             catch (Exception ex)

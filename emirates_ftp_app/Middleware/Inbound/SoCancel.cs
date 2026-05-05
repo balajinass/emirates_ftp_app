@@ -209,10 +209,12 @@ namespace emirates_ftp_app.Middleware.Inbound
                 }
 
                 MyLogger.GetInstance().Info("Number of Customers : " + listOfCustomers.Count);
+                Console.WriteLine($"Number of Customers : " + listOfCustomers.Count);
 
                 foreach (var customer in listOfCustomers)
                 {
                     MyLogger.GetInstance().Info("PROJECT-NAME : " + customer.PROJECT_NAME);
+                    Console.WriteLine("PROJECT-NAME : " + customer.PROJECT_NAME);
 
                     var moduleConfig = customer.MODULES?.FirstOrDefault(m => m.MODULE_NAME == module);
                     if (moduleConfig == null) continue;
@@ -235,6 +237,7 @@ namespace emirates_ftp_app.Middleware.Inbound
                         }
 
                         MyLogger.GetInstance().Info($"Download Success: {file.fileName}");
+                        Console.WriteLine($"Download Success: {file.fileName}");
 
                         file.slNo = await oSoCancelDao_.GenerateSoCancelSlNo();
                         file.moduleType = "SOC - CUS TO EFS";
@@ -248,6 +251,7 @@ namespace emirates_ftp_app.Middleware.Inbound
                         }
 
                         MyLogger.GetInstance().Info("SalesOrderCancel - EDI Log Insert Success");
+                        Console.WriteLine("SalesOrderCancel - EDI Log Insert Success");
 
                         var csvData = await oCommon_.ReadCsvFileforSoCancel(customer, moduleConfig, file);
 
@@ -256,6 +260,7 @@ namespace emirates_ftp_app.Middleware.Inbound
                             if (!await oSoCancelDao_.InsertSoCancelImport(csvData, ediFtp))
                             {
                                 errorPath = await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);
+                                Console.Error.WriteLine($"InsertSoCancelImport failed for file {file.fileName}");
                                 throw new Exception($"InsertSoCancelImport failed for file {file.fileName}");
                             }
                         }
@@ -287,6 +292,10 @@ namespace emirates_ftp_app.Middleware.Inbound
                             emailRequests.Add(fileData);
                     }
                 }
+                var previousColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("SalesOrderCancel Creation Completed");
+                Console.ForegroundColor = previousColor;
             }
             catch (Exception ex)
             {

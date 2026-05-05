@@ -136,10 +136,12 @@ namespace emirates_ftp_app.Middleware.Outbound
                 }
 
                 MyLogger.GetInstance().Info("Number of Customers: " + customers.Count);
+                Console.WriteLine($"Number of Customers: " + customers.Count);
 
                 foreach (var customer in customers)
                 {
                     MyLogger.GetInstance().Info("PROJECT-NAME: " + customer.PROJECT_NAME);
+                    Console.WriteLine($"PROJECT-NAME: " + customer.PROJECT_NAME);
 
                     if (customer.OUTBOUND == null) continue;
 
@@ -152,6 +154,7 @@ namespace emirates_ftp_app.Middleware.Outbound
                     if (filesToProcess == null || filesToProcess.Count == 0)
                     {
                         MyLogger.GetInstance().Info($"{module} - No files to process for PROJECT-NAME: {customer.PROJECT_NAME}");
+                        Console.WriteLine($"{module} - No files to process for PROJECT-NAME: {customer.PROJECT_NAME}");
                         continue;
                     }
 
@@ -163,11 +166,13 @@ namespace emirates_ftp_app.Middleware.Outbound
                         {
                             await oComm_.UpdateFileStatus(file.FILE_NAME!, customer.PROJECT_NAME!);
                             MyLogger.GetInstance().Info($"File {file.FILE_NAME} marked as processed.");
+                            Console.WriteLine($"File {file.FILE_NAME} marked as processed.");
                         }
                         else
                         {
                             errors.Add($"Failed to move file {file.FILE_NAME} via FTP for PROJECT-NAME: {customer.PROJECT_NAME}");
                             MyLogger.GetInstance().Error($"Failed to move file {file.FILE_NAME} via FTP.");
+                            Console.Error.WriteLine($"Failed to move file {file.FILE_NAME} via FTP.");
                         }
 
                         var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.FILE_NAME!, module);
@@ -175,6 +180,10 @@ namespace emirates_ftp_app.Middleware.Outbound
                             emailRequests.Add(fileData);
                     }
                 }
+                var previousColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("DN Upload OutBound Completed");
+                Console.ForegroundColor = previousColor;
             }
             catch (Exception ex)
             {

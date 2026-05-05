@@ -227,16 +227,19 @@ namespace emirates_ftp_app.Middleware.Inbound
                 if (listOfCustomers == null || listOfCustomers.Count == 0)
                 {
                     MyLogger.GetInstance().Info("Number of Customers: 0");
+                    Console.WriteLine("Number of Customers: 0");
                     return (allEmailRequests, allErrors);
                 }
 
                 MyLogger.GetInstance().Info("Number of Customers: " + listOfCustomers.Count);
+                Console.WriteLine("Number of Customers: " + listOfCustomers.Count);
 
                 foreach (var customer in listOfCustomers)
                 {
                     try
                     {
                         MyLogger.GetInstance().Info("PROJECT-NAME: " + customer.PROJECT_NAME);
+                        Console.WriteLine("PROJECT-NAME: " + customer.PROJECT_NAME);
 
                         var customerModule = customer.MODULES?.FirstOrDefault(m => m.MODULE_NAME == module);
                         if (customerModule == null) continue;
@@ -275,6 +278,7 @@ namespace emirates_ftp_app.Middleware.Inbound
 
                                 if (!await oSOManager_.InsertClientImport(csvData, ediLog))
                                 {
+                                    Console.WriteLine("InsertClientImport failed for file {oFiles.fileName");
                                     throw new Exception($"InsertClientImport failed for file {oFiles.fileName}");
                                 }
 
@@ -299,6 +303,7 @@ namespace emirates_ftp_app.Middleware.Inbound
 
                                 if (!await oSOManager_.InsertSOImport(csvData, ediLog))
                                 {
+                                    Console.WriteLine("InsertSOImport failed for file {oFiles.fileName");
                                     throw new Exception($"InsertSOImport failed for file {oFiles.fileName}");
                                 }
 
@@ -322,6 +327,7 @@ namespace emirates_ftp_app.Middleware.Inbound
                             catch (Exception ex)
                             {
                                 MyLogger.GetInstance().Error($"Error processing file {oFiles.fileName}: {ex.Message}");
+                                Console.Error.WriteLine($"Error processing file {oFiles.fileName}: {ex.Message}");
 
                                 var errorHtml = await oCommon_.GenerateExceptionHtml(
                                     $"SO File: {oFiles.fileName}",
@@ -350,6 +356,11 @@ namespace emirates_ftp_app.Middleware.Inbound
                         MyLogger.GetInstance().Error("Error in SOCreation: " + ex);
                     }
                 }
+                var previousColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("SO Creation Completed");
+                Console.ForegroundColor = previousColor;
+                
             }
             catch (Exception ex)
             {

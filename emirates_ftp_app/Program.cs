@@ -33,7 +33,7 @@ namespace emirates_ftp_app
         {            
             string moduleName = string.Empty;
             //"SO", "ASN", "SUPPLIER", "SOCANCEL","DNUPLOAD", "PUTAWAY", "STOCKTRANSFER"
-            args = new[] { "SO"}; // dev-only test input
+            //args = new[] { "SO" }; // dev - only test input
             string allRows = "";
             string allErrors = "";
             if (args == null || args.Length == 0 || string.IsNullOrWhiteSpace(args[0]))
@@ -50,7 +50,7 @@ namespace emirates_ftp_app
             }
             else
             {
-               // moduleName = args[0].ToUpperInvariant(); -- Loop will handle the UpperCase
+                moduleName = args[0].ToUpperInvariant(); 
             }
 
             string runStamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
@@ -156,11 +156,8 @@ namespace emirates_ftp_app
                     .Build();
 
                 
-                var oCommon_ = host.Services.GetRequiredService<ICommonFunctions>();
-
-                foreach (var arg in args)
-                {
-                    moduleName = arg.ToUpperInvariant();
+                var oCommon_ = host.Services.GetRequiredService<ICommonFunctions>();                
+                    
 
                     switch (moduleName)
                     {
@@ -232,7 +229,7 @@ namespace emirates_ftp_app
                             Logger.Warn("Unknown module: {Module}", moduleName);
                             break;
                     }
-                }
+               
 
                 // Send emails after all modules
                 if (!string.IsNullOrEmpty(allRows))

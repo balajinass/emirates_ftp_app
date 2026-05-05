@@ -55,10 +55,12 @@ namespace emirates_ftp_app.Middleware.Inbound
                 }
 
                 MyLogger.GetInstance().Info("Number of Customers : " + listofcustomer_.Count);
+                Console.WriteLine("Number of Customers : " + listofcustomer_.Count);
 
                 foreach (var oCustomer_ in listofcustomer_)
                 {
                     MyLogger.GetInstance().Info("PROJECT-NAME : " + oCustomer_.PROJECT_NAME);
+                    Console.WriteLine("PROJECT-NAME : " + oCustomer_.PROJECT_NAME);
 
                     var oModule_ = oCustomer_.MODULES?
                         .FirstOrDefault(w => w.MODULE_NAME == module);
@@ -133,6 +135,7 @@ namespace emirates_ftp_app.Middleware.Inbound
                             if (!await oSuppDao_.InsertSupplierImport(listofCsv_, ediFtp_))
                             {
                                 sFileMovetoError = await oFtp_.MoveFiletoErrorFolder(oCustomer_, oModule_, oFiles, credentials);
+                                Console.Error.WriteLine($"InsertSupplierImport failed for file {oFiles.fileName}");
                                 throw new Exception($"InsertSupplierImport failed for file {oFiles.fileName}");
                             }
                         }
@@ -212,6 +215,7 @@ namespace emirates_ftp_app.Middleware.Inbound
 
                 MyLogger.GetInstance().Info("Number of Customers : " + listOfCustomers.Count);
 
+
                 foreach (var customer in listOfCustomers)
                 {
                     MyLogger.GetInstance().Info("PROJECT-NAME : " + customer.PROJECT_NAME);
@@ -289,6 +293,10 @@ namespace emirates_ftp_app.Middleware.Inbound
                             emailRequests.Add(fileData);
                     }
                 }
+                var previousColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("Supplier Creation Completed");
+                Console.ForegroundColor = previousColor;
             }
             catch (Exception ex)
             {

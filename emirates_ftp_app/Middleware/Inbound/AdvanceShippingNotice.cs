@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using static System.Net.WebRequestMethods;
 
 namespace emirates_ftp_app.Middleware.Inbound
 {
@@ -194,10 +195,12 @@ namespace emirates_ftp_app.Middleware.Inbound
                 }
 
                 MyLogger.GetInstance().Info("Number of Customers : " + listOfCustomers.Count);
+                Console.WriteLine($"Number of Customers : " + listOfCustomers.Count);
 
                 foreach (var customer in listOfCustomers)
                 {
                     MyLogger.GetInstance().Info("PROJECT-NAME : " + customer.PROJECT_NAME);
+                    Console.WriteLine($"PROJECT-NAME : " + customer.PROJECT_NAME);
 
                     var moduleConfig = customer.MODULES?.FirstOrDefault(m => m.MODULE_NAME == module);
                     if (moduleConfig == null) continue;
@@ -217,10 +220,12 @@ namespace emirates_ftp_app.Middleware.Inbound
                         {
                             errorPath = await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);
                             errors.Add($"Download failed for file {file.fileName}");
+                            Console.WriteLine($"Download failed for file {file.fileName}");
                             continue;
                         }
 
                         MyLogger.GetInstance().Info($"Download Success: {file.fileName}");
+                        Console.WriteLine($"Download Success: {file.fileName}");
 
                         file.slNo = await oASNDao_.GenerateASNSlNo();
                         file.moduleType = "ASN - CUS TO EFS";
@@ -230,6 +235,7 @@ namespace emirates_ftp_app.Middleware.Inbound
                         {
                             errorPath = await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);
                             errors.Add($"EDI Log insertion failed for file {file.fileName}");
+                            Console.WriteLine($"EDI Log insertion failed for file {file.fileName}");
                             continue;
                         }
 
@@ -252,6 +258,7 @@ namespace emirates_ftp_app.Middleware.Inbound
                         }
 
                         MyLogger.GetInstance().Info("ASN Insert Success");
+                        Console.WriteLine("ASN Insert Success");
 
                         var procedureInput = new Model.Inbound.pro_client_import_model
                         {
@@ -273,6 +280,10 @@ namespace emirates_ftp_app.Middleware.Inbound
                             emailRequests.Add(fileData);
                     }
                 }
+                var previousColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("ASN Creation Completed");
+                Console.ForegroundColor = previousColor;
             }
             catch (Exception ex)
             {

@@ -247,6 +247,7 @@ namespace emirates_ftp_app.Repository.FtpConnection
                 }
 
                 MyLogger.GetInstance().Info("File Download Completed");
+                Console.WriteLine("File Download Completed");
                 return true;
             }
             catch (Exception ex)
