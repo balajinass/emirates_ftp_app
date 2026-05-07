@@ -138,7 +138,15 @@ namespace emirates_ftp_app.Repository.FtpConnection
 
             try
             {
-                string host = oCustomer_.FTP_URL!.Replace("ftp://", "").TrimEnd('/');
+                string host = oCustomer_.FTP_URL!
+                .Replace("ftp://", "")
+                .TrimEnd('/');
+
+             if (!string.IsNullOrWhiteSpace(oCustomer_.FTP_PORT))
+             {
+                 host = $"{host}:{oCustomer_.FTP_PORT}";
+             }
+
                 string path = oModule_.FTP_FILE_PATH!;
                 string prefix = module;
 
