@@ -342,10 +342,10 @@ namespace emirates_ftp_app.Middleware.Inbound
                     }
                     catch (Exception ex)
                     {
-                        var previousColor = Console.ForegroundColor;
+                        var previousColors = Console.ForegroundColor;
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.Error.WriteLine($"Error in SOCreation: {ex}");
-                        Console.ForegroundColor = previousColor;
+                        Console.ForegroundColor = previousColors;
 
                         var errorHtml = await oCommon_.GenerateExceptionHtml(
                             $"SO Customer: {customer.PROJECT_NAME}",

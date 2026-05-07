@@ -136,7 +136,7 @@ namespace emirates_ftp_app.Repository.Inbound.SoCancel
                     }
                   
                     await context.SaveChangesAsync();
-
+                    Console.WriteLine("Insert Completed in WMS_EL_SO_CANCEL_IMPORT");
                     return true;
                 }
             }
@@ -175,6 +175,7 @@ namespace emirates_ftp_app.Repository.Inbound.SoCancel
                 );
 
                 MyLogger.GetInstance().Info("Procedure Executed Successfully - EL_SO_CANCEL_IMPORT");
+                Console.WriteLine($"Procedure Executed Successfully - EL_SO_CANCEL_IMPORT");
                 return true;
             }
             catch (Exception ex)

@@ -33,7 +33,7 @@ namespace emirates_ftp_app
         {            
             string moduleName = string.Empty;
             //"SO", "ASN", "SUPPLIER", "SOCANCEL","DNUPLOAD", "PUTAWAY", "STOCKTRANSFER"
-            //args = new[] { "SO" }; // dev - only test input
+            //args = new[] { "PUTAWAY" }; // dev - only test input
             string allRows = "";
             string allErrors = "";
             if (args == null || args.Length == 0 || string.IsNullOrWhiteSpace(args[0]))
