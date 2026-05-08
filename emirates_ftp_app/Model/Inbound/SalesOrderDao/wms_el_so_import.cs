@@ -43,7 +43,7 @@ namespace emirates_ftp_app.Model.Inbound.SalesOrderDao
         public string? DIMENTION { get; set; } 
         public string? VALUE { get; set; }
         public string? COUNTRY_CODE { get; set; } 
-        public string? COST_CURRENCY_CODE { get; set; } // for local
-        //public string? CUST_CURRENCY_CODE { get; set; } // for Prod
+        //public string? COST_CURRENCY_CODE { get; set; } // for local
+        public string? CUST_CURRENCY_CODE { get; set; } // for Prod
     }
 }

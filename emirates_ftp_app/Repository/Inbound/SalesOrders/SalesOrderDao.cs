@@ -63,7 +63,7 @@ namespace emirates_ftp_app.Repository.Inbound.SalesOrders
             try
             {               
                 using var scope = _serviceProvider.CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<NassDbContext>();
+                var context = scope.ServiceProvider.GetRequiredService<PrimaryDbContext>();
                
                 await using var conn = context.Database.GetDbConnection();
                 if (conn.State != System.Data.ConnectionState.Open)
@@ -263,7 +263,7 @@ namespace emirates_ftp_app.Repository.Inbound.SalesOrders
                             DIMENTION = item?.DIMENTION,
                             VALUE = item?.VALUE,
                             COUNTRY_CODE = item?.COUNTRYCODE,
-                            COST_CURRENCY_CODE = item?.CUSTCURRENCYCODE
+                            CUST_CURRENCY_CODE = item?.CUSTCURRENCYCODE
                         };
 
                         entities.Add(entity);

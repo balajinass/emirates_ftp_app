@@ -231,12 +231,33 @@ namespace emirates_ftp_app.Repository.FtpConnection
         #endregion
 
         #region DownloadFile
-        public async Task<bool> DownloadFile(web_wms_edi_config_model oCustomer_,web_wms_edi_module_config_model oModule_,input_request_model oFile,NetworkCredential credentials)
+        public async Task<bool> DownloadFile(
+    web_wms_edi_config_model oCustomer_,
+    web_wms_edi_module_config_model oModule_,
+    input_request_model oFile,
+    NetworkCredential credentials)
         {
             try
             {
-                string sFtpFullPath = oCustomer_.FTP_URL + oModule_.FTP_FILE_PATH + "/" + oFile.fileName;
-                string sLocalFullPath = oModule_.LOCAL_FILE_PATH + oFile.fileName;
+                string sFtpFullPath =
+                    oCustomer_.FTP_URL +
+                    oModule_.FTP_FILE_PATH +
+                    "/" +
+                    oFile.fileName;
+
+                string sLocalFolderPath = oModule_.LOCAL_FILE_PATH!;
+
+                // CREATE FOLDER IF NOT EXISTS
+                if (!Directory.Exists(sLocalFolderPath))
+                {
+                    Directory.CreateDirectory(sLocalFolderPath);
+
+                    Console.WriteLine($"Local folder created : {sLocalFolderPath}");
+                    MyLogger.GetInstance().Info($"Local folder created : {sLocalFolderPath}");
+                }
+
+                string sLocalFullPath =
+                    Path.Combine(sLocalFolderPath, oFile.fileName!);
 
                 var request = CreateFtpWebRequest(sFtpFullPath, credentials, true);
                 request.Method = WebRequestMethods.Ftp.DownloadFile;
@@ -246,7 +267,10 @@ namespace emirates_ftp_app.Repository.FtpConnection
 
                 using (var response = (FtpWebResponse)await request.GetResponseAsync())
                 using (var stream = response.GetResponseStream())
-                using (var fileStream = new FileStream(sLocalFullPath, FileMode.Create, FileAccess.Write))
+                using (var fileStream = new FileStream(
+                    sLocalFullPath,
+                    FileMode.Create,
+                    FileAccess.Write))
                 {
                     while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
                     {
@@ -254,18 +278,28 @@ namespace emirates_ftp_app.Repository.FtpConnection
                     }
                 }
 
-                MyLogger.GetInstance().Info("File Download Completed");
-                Console.WriteLine("File Download Completed");
+                Console.ForegroundColor = ConsoleColor.Green;
+
+                Console.WriteLine($"File Download Completed : {oFile.fileName}");
+                MyLogger.GetInstance().Info($"File Download Completed : {oFile.fileName}");
+
+                Console.ResetColor();
+
                 return true;
             }
             catch (Exception ex)
             {
                 var previousColor = Console.ForegroundColor;
+
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Exception in DownloadFile - " + ex.Message);
+
+                Console.WriteLine($"Exception in DownloadFile - {oFile.fileName} - {ex.Message}");
+
                 Console.ForegroundColor = previousColor;
 
-                MyLogger.GetInstance().Error("Exception in DownloadFile - " + ex.Message);
+                MyLogger.GetInstance().Error(
+                    $"Exception in DownloadFile - {oFile.fileName} - {ex.Message}");
+
                 return false;
             }
         }
