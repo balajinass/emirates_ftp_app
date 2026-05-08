@@ -452,6 +452,13 @@ namespace emirates_ftp_app.Middleware.Inbound
                                     Console.WriteLine($"[{oFiles.fileName}] File moved to ERROR folder");
                                 }
 
+                                // Email Log //
+                                var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(oFiles.fileName!, module);
+                                if (fileData != null)
+                                {
+                                    allEmailRequests.Add(fileData);
+                                }
+
                                 // ====================================================
                                 // END LOG
                                 // ====================================================
@@ -494,6 +501,12 @@ namespace emirates_ftp_app.Middleware.Inbound
                                 MyLogger.GetInstance().Error(errorLog);
 
                                 Console.ResetColor();
+
+                                var errorHtml = await oCommon_.GenerateExceptionHtml(
+                                   $"SO File: {oFiles.fileName}",
+                                   ex
+                               );
+                                allErrors.Add(errorHtml);
 
                                 await oFtp_.MoveFiletoErrorFolder(customer, customerModule, oFiles, credentials);
                             }
