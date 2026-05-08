@@ -210,74 +210,144 @@ namespace emirates_ftp_app.Middleware.Inbound
 
                     if (files == null || files.Count == 0) continue;
 
+                    int fileLoop = 1;
+                    int totalFiles = files.Count;
+
                     foreach (var file in files)
                     {
-                        string backupPath = string.Empty;
-                        string errorPath = string.Empty;
-
-                        bool downloaded = await oFtp_.DownloadFile(customer, moduleConfig, file, credentials);
-                        if (!downloaded)
-                        {
-                            errorPath = await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);
-                            errors.Add($"Download failed for file {file.fileName}");
-                            Console.WriteLine($"Download failed for file {file.fileName}");
-                            continue;
-                        }
-
-                        MyLogger.GetInstance().Info($"Download Success: {file.fileName}");
-                        Console.WriteLine($"Download Success: {file.fileName}");
-
-                        file.slNo = await oASNDao_.GenerateASNSlNo();
-                        file.moduleType = "ASN - CUS TO EFS";
-
-                        var ediFtp = await oCommonManager_.InsertEdiLog(customer, moduleConfig, file);
-                        if (ediFtp == null)
-                        {
-                            errorPath = await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);
-                            errors.Add($"EDI Log insertion failed for file {file.fileName}");
-                            Console.WriteLine($"EDI Log insertion failed for file {file.fileName}");
-                            continue;
-                        }
-
-                        MyLogger.GetInstance().Info("ASN - EDI Log Insert Success");
-
-                        var csvData = await oCommon_.ReadCsvFileforASN(customer, moduleConfig, file);
+                        var fileStartTime = DateTime.Now;
 
                         try
                         {
-                            if (!await oASNDao_.InsertASNImport(csvData, ediFtp))
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+
+                            string startLog = $@"
+                                    *************************************************************
+                                    FILE PROCESS START   [{fileLoop}/{totalFiles}]
+                                    *************************************************************
+                                    Customer     : {customer.PROJECT_NAME}
+                                    Module       : {module}
+                                    File Name    : {file.fileName}
+                                    Start Time   : {fileStartTime:dd-MMM-yyyy HH:mm:ss}
+                                    *************************************************************";
+
+                            Console.WriteLine(startLog);
+                            MyLogger.GetInstance().Info(startLog);
+                            Console.ResetColor();
+
+                            // ====================================================
+                            // EXECUTE INTERNAL LOGIC (DOWNLOAD / CSV / INSERT / PROCEDURE)
+                            // ====================================================                            
+                            string backupPath = string.Empty;
+                            string errorPath = string.Empty;
+
+                            bool downloaded = await oFtp_.DownloadFile(customer, moduleConfig, file, credentials);
+                            if (!downloaded)
                             {
                                 errorPath = await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);
-                                throw new Exception($"InsertASNImport failed for file {file.fileName}");
+                                errors.Add($"Download failed for file {file.fileName}");
+                                continue;
                             }
+
+                            MyLogger.GetInstance().Info($"Download Success: {file.fileName}");
+                            Console.WriteLine($"Download Success: {file.fileName}");
+
+                            file.slNo = await oASNDao_.GenerateASNSlNo();
+                            file.moduleType = "ASN - CUS TO EFS";
+
+                            var ediFtp = await oCommonManager_.InsertEdiLog(customer, moduleConfig, file);
+                            if (ediFtp == null)
+                            {
+                                errorPath = await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);
+                                errors.Add($"EDI Log insertion failed for file {file.fileName}");
+                                continue;
+                            }
+
+                            MyLogger.GetInstance().Info("ASN - EDI Log Insert Success");
+
+                            var csvData = await oCommon_.ReadCsvFileforASN(customer, moduleConfig, file);
+
+                            try
+                            {
+                                if (!await oASNDao_.InsertASNImport(csvData, ediFtp))
+                                {
+                                    errorPath = await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);
+                                    throw new Exception($"InsertASNImport failed for file {file.fileName}");
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                errors.Add($"Error processing file {file.fileName}: {ex.Message}");
+                                continue;
+                            }
+
+                            MyLogger.GetInstance().Info("ASN Insert Success");
+                            Console.WriteLine("ASN Insert Success");
+
+                            var procedureInput = new Model.Inbound.pro_client_import_model
+                            {
+                                FA_COMPANY_CODE = customer.COMPANY_CODE,
+                                FA_BRANCH_CODE = customer.BRANCH_CODE,
+                                FA_LOCATION_CODE = customer.LOCATION_CODE,
+                                FA_SL_NO = Convert.ToString(file.slNo)
+                            };
+
+                            bool procedureSuccess = await oASNDao_.ExecASNImportProcedure(procedureInput);
+
+                            if (procedureSuccess)
+                                backupPath = await oFtp_.MoveFileToBackupFolder(customer, moduleConfig, file, credentials);
+                            else
+                                errorPath = await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);
+
+                            var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.fileName!, module);
+                            if (fileData != null)
+                                emailRequests.Add(fileData);
+                            
+
+                            // ====================================================
+                            // END LOG
+                            // ====================================================
+                            var endTime = DateTime.Now;
+                            var totalSeconds = (endTime - fileStartTime).TotalSeconds;
+
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            string endLog = $@"
+                                    *************************************************************
+                                    FILE PROCESS COMPLETED
+                                    *************************************************************
+                                    File Name    : {file.fileName}
+                                    End Time     : {endTime:dd-MMM-yyyy HH:mm:ss}
+                                    Duration     : {totalSeconds} Seconds
+                                    Status       : SUCCESS
+                                    *************************************************************";
+
+                            Console.WriteLine(endLog);
+                            MyLogger.GetInstance().Info(endLog);
+                            Console.ResetColor();
                         }
                         catch (Exception ex)
                         {
-                            errors.Add($"Error processing file {file.fileName}: {ex.Message}");
-                            continue;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            string errorLog = $@"
+                                *************************************************************
+                                FILE PROCESS FAILED
+                                *************************************************************
+                                File Name    : {file.fileName}
+                                Error        : {ex.Message}
+                                Time         : {DateTime.Now:dd-MMM-yyyy HH:mm:ss}
+                                *************************************************************";
+
+                            Console.WriteLine(errorLog);
+                            MyLogger.GetInstance().Error(errorLog);
+                            Console.ResetColor();
+
+                            var errorHtml = await oCommon_.GenerateExceptionHtml($"ASN File: {file.fileName}", ex);
+                            errors.Add(errorHtml);
+
+                            await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);
                         }
 
-                        MyLogger.GetInstance().Info("ASN Insert Success");
-                        Console.WriteLine("ASN Insert Success");
-
-                        var procedureInput = new Model.Inbound.pro_client_import_model
-                        {
-                            FA_COMPANY_CODE = customer.COMPANY_CODE,
-                            FA_BRANCH_CODE = customer.BRANCH_CODE,
-                            FA_LOCATION_CODE = customer.LOCATION_CODE,
-                            FA_SL_NO = Convert.ToString(file.slNo)
-                        };
-
-                        bool procedureSuccess = await oASNDao_.ExecASNImportProcedure(procedureInput);
-
-                        if (procedureSuccess)
-                            backupPath = await oFtp_.MoveFileToBackupFolder(customer, moduleConfig, file, credentials);
-                        else
-                            errorPath = await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);
-
-                        var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.fileName!, module);
-                        if (fileData != null)
-                            emailRequests.Add(fileData);
+                        fileLoop++;
                     }
                 }
                 var previousColor = Console.ForegroundColor;

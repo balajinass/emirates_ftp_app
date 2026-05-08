@@ -57,7 +57,7 @@ namespace emirates_ftp_app.Repository.Inbound.Asn
             try
             {
                 using var scope = _serviceProvider.CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<NassDbContext>();
+                var context = scope.ServiceProvider.GetRequiredService<PrimaryDbContext>();
 
                 await using var conn = context.Database.GetDbConnection();
                 if (conn.State != System.Data.ConnectionState.Open)

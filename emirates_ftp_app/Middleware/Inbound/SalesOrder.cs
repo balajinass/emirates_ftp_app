@@ -257,118 +257,55 @@ namespace emirates_ftp_app.Middleware.Inbound
 
                             try
                             {
+                                // ====================================================
+                                // START LOG
+                                // ====================================================
                                 Console.ForegroundColor = ConsoleColor.Cyan;
 
                                 string startLog = $@"
-                                    *************************************************************
-                                    FILE PROCESS START   [{fileLoop}/{totalFiles}]
-                                    *************************************************************
-                                    Customer     : {customer.PROJECT_NAME}
-                                    Module       : {module}
-                                    File Name    : {oFiles.fileName}
-                                    Start Time   : {fileStartTime:dd-MMM-yyyy HH:mm:ss}
-                                    *************************************************************";
+                                *************************************************************
+                                FILE PROCESS START   [{fileLoop}/{totalFiles}]
+                                *************************************************************
+                                Customer     : {customer.PROJECT_NAME}
+                                Module       : {module}
+                                File Name    : {oFiles.fileName}
+                                Start Time   : {fileStartTime:dd-MMM-yyyy HH:mm:ss}
+                                *************************************************************";
 
                                 Console.WriteLine(startLog);
                                 MyLogger.GetInstance().Info(startLog);
-
                                 Console.ResetColor();
-
+                               
                                 // ====================================================
-                                // DOWNLOAD
-                                // ====================================================
-
-                                Console.WriteLine($"[{oFiles.fileName}] Download Started");
-                                MyLogger.GetInstance().Info($"[{oFiles.fileName}] Download Started");
-
                                 if (!await oFtp_.DownloadFile(customer, customerModule, oFiles, credentials))
                                 {
-                                    Console.ForegroundColor = ConsoleColor.Red;
-
-                                    Console.WriteLine($"[{oFiles.fileName}] Download Failed");
-                                    MyLogger.GetInstance().Error($"[{oFiles.fileName}] Download Failed");
-
-                                    Console.ResetColor();
-
                                     await oFtp_.MoveFiletoErrorFolder(customer, customerModule, oFiles, credentials);
-
-                                    fileLoop++;
                                     continue;
                                 }
-
-                                Console.ForegroundColor = ConsoleColor.Green;
-
-                                Console.WriteLine($"[{oFiles.fileName}] Download Success");
-                                MyLogger.GetInstance().Info($"[{oFiles.fileName}] Download Success");
-
-                                Console.ResetColor();
-
-                                // ====================================================
-                                // CSV READ
-                                // ====================================================
-
-                                Console.WriteLine($"[{oFiles.fileName}] CSV Reading Started");
 
                                 oFiles.slNo = await oSOManager_.GenerateSOSlNo();
 
                                 var csvData = await oCommon_.ReadCsvFile(customer, customerModule, oFiles);
-
                                 if (csvData == null || csvData.Count == 0)
                                 {
-                                    Console.ForegroundColor = ConsoleColor.Red;
-
-                                    Console.WriteLine($"[{oFiles.fileName}] CSV Read Failed / Empty File");
-                                    MyLogger.GetInstance().Error($"[{oFiles.fileName}] CSV Read Failed");
-
-                                    Console.ResetColor();
-
                                     await oFtp_.MoveFiletoErrorFolder(customer, customerModule, oFiles, credentials);
-
-                                    fileLoop++;
                                     continue;
                                 }
 
-                                Console.ForegroundColor = ConsoleColor.Green;
-
-                                Console.WriteLine($"[{oFiles.fileName}] CSV Read Success - Total Rows : {csvData.Count}");
-                                MyLogger.GetInstance().Info($"[{oFiles.fileName}] CSV Read Success");
-
-                                Console.ResetColor();
-
-                                // ====================================================
-                                // CUSTOMER IMPORT
-                                // ====================================================
-
-                                Console.WriteLine($"[{oFiles.fileName}] CUSTOMER Import Started");
-
+                                // CUSTOMER Import
                                 oFiles.moduleType = "CUSTOMER";
-
                                 var ediLog = await oCommonManager_.InsertEdiLog(customer, customerModule, oFiles);
-
                                 if (ediLog == null)
                                 {
-                                    Console.WriteLine($"[{oFiles.fileName}] CUSTOMER EDI Log Failed");
-
                                     await oFtp_.MoveFiletoErrorFolder(customer, customerModule, oFiles, credentials);
-
-                                    fileLoop++;
                                     continue;
                                 }
 
                                 if (!await oSOManager_.InsertClientImport(csvData, ediLog))
                                 {
-                                    throw new Exception($"InsertClientImport failed");
+                                    Console.WriteLine($"InsertClientImport failed for file {oFiles.fileName}");
+                                    throw new Exception($"InsertClientImport failed for file {oFiles.fileName}");
                                 }
-
-                                Console.ForegroundColor = ConsoleColor.Green;
-
-                                Console.WriteLine($"[{oFiles.fileName}] CUSTOMER Import Success");
-
-                                Console.ResetColor();
-
-                                // ====================================================
-                                // PROCEDURE EXECUTION
-                                // ====================================================
 
                                 var proInput = new Model.Inbound.pro_client_import_model
                                 {
@@ -378,134 +315,74 @@ namespace emirates_ftp_app.Middleware.Inbound
                                     FA_SL_NO = oFiles.slNo.ToString()
                                 };
 
-                                Console.WriteLine($"[{oFiles.fileName}] CUSTOMER Procedure Started");
-
                                 await oSOManager_.ExecClientImportProcedure(proInput);
 
-                                Console.ForegroundColor = ConsoleColor.Green;
-
-                                Console.WriteLine($"[{oFiles.fileName}] CUSTOMER Procedure Success");
-
-                                Console.ResetColor();
-
-                                // ====================================================
-                                // SO IMPORT
-                                // ====================================================
-
-                                Console.WriteLine($"[{oFiles.fileName}] SO Import Started");
-
+                                // SO Import
                                 oFiles.moduleType = "SO - CUS TO EFS";
-
                                 ediLog = await oCommonManager_.InsertEdiLog(customer, customerModule, oFiles);
-
                                 if (ediLog == null)
                                 {
-                                    Console.WriteLine($"[{oFiles.fileName}] SO EDI Log Failed");
-
                                     await oFtp_.MoveFiletoErrorFolder(customer, customerModule, oFiles, credentials);
-
-                                    fileLoop++;
                                     continue;
                                 }
 
                                 if (!await oSOManager_.InsertSOImport(csvData, ediLog))
                                 {
-                                    throw new Exception($"InsertSOImport failed");
+                                    Console.WriteLine($"InsertSOImport failed for file {oFiles.fileName}");
+                                    throw new Exception($"InsertSOImport failed for file {oFiles.fileName}");
                                 }
-
-                                Console.ForegroundColor = ConsoleColor.Green;
-
-                                Console.WriteLine($"[{oFiles.fileName}] SO Import Success");
-
-                                Console.ResetColor();
-
-                                // ====================================================
-                                // SO PROCEDURE
-                                // ====================================================
-
-                                Console.WriteLine($"[{oFiles.fileName}] SO Procedure Started");
 
                                 var insertSuccess = await oSOManager_.ExecSOImportProcedure(proInput);
 
                                 if (insertSuccess)
-                                {
-                                    Console.ForegroundColor = ConsoleColor.Green;
-
-                                    Console.WriteLine($"[{oFiles.fileName}] SO Procedure Success");
-
-                                    Console.ResetColor();
-
                                     await oFtp_.MoveFileToBackupFolder(customer, customerModule, oFiles, credentials);
-
-                                    Console.WriteLine($"[{oFiles.fileName}] File moved to BACKUP folder");
-                                }
                                 else
-                                {
-                                    Console.ForegroundColor = ConsoleColor.Red;
-
-                                    Console.WriteLine($"[{oFiles.fileName}] SO Procedure Failed");
-
-                                    Console.ResetColor();
-
                                     await oFtp_.MoveFiletoErrorFolder(customer, customerModule, oFiles, credentials);
 
-                                    Console.WriteLine($"[{oFiles.fileName}] File moved to ERROR folder");
-                                }
-
-                                // Email Log //
                                 var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(oFiles.fileName!, module);
                                 if (fileData != null)
-                                {
                                     allEmailRequests.Add(fileData);
-                                }
-
+                              
                                 // ====================================================
-                                // END LOG
-                                // ====================================================
-
                                 var endTime = DateTime.Now;
                                 var totalSeconds = (endTime - fileStartTime).TotalSeconds;
 
                                 Console.ForegroundColor = ConsoleColor.Cyan;
-
                                 string endLog = $@"
-                                    *************************************************************
-                                    FILE PROCESS COMPLETED
-                                    *************************************************************
-                                    File Name    : {oFiles.fileName}
-                                    End Time     : {endTime:dd-MMM-yyyy HH:mm:ss}
-                                    Duration     : {totalSeconds} Seconds
-                                    Status       : SUCCESS
-                                    *************************************************************";
+                                *************************************************************
+                                FILE PROCESS COMPLETED
+                                *************************************************************
+                                File Name    : {oFiles.fileName}
+                                End Time     : {endTime:dd-MMM-yyyy HH:mm:ss}
+                                Duration     : {totalSeconds} Seconds
+                                Status       : SUCCESS
+                                *************************************************************";
 
                                 Console.WriteLine(endLog);
                                 MyLogger.GetInstance().Info(endLog);
-
                                 Console.ResetColor();
                             }
                             catch (Exception ex)
                             {
+                                // ====================================================
+                                // EXCEPTION HANDLING
+                                // ====================================================
                                 Console.ForegroundColor = ConsoleColor.Red;
 
                                 string errorLog = $@"
-                                    *************************************************************
-                                    FILE PROCESS FAILED
-                                    *************************************************************
-                                    File Name    : {oFiles.fileName}
-                                    Error        : {ex.Message}
-                                    Time         : {DateTime.Now:dd-MMM-yyyy HH:mm:ss}
-                                    *************************************************************";
+                                *************************************************************
+                                FILE PROCESS FAILED
+                                *************************************************************
+                                File Name    : {oFiles.fileName}
+                                Error        : {ex.Message}
+                                Time         : {DateTime.Now:dd-MMM-yyyy HH:mm:ss}
+                                *************************************************************";
 
                                 Console.WriteLine(errorLog);
-
                                 MyLogger.GetInstance().Error(errorLog);
-
                                 Console.ResetColor();
 
-                                var errorHtml = await oCommon_.GenerateExceptionHtml(
-                                   $"SO File: {oFiles.fileName}",
-                                   ex
-                               );
+                                var errorHtml = await oCommon_.GenerateExceptionHtml($"SO File: {oFiles.fileName}", ex);
                                 allErrors.Add(errorHtml);
 
                                 await oFtp_.MoveFiletoErrorFolder(customer, customerModule, oFiles, credentials);
