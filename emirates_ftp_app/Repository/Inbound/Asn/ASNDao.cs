@@ -67,7 +67,7 @@ namespace emirates_ftp_app.Repository.Inbound.Asn
                 cmd.CommandText = "SELECT ASN_SEQ.NEXTVAL SL_NO FROM DUAL";
 
                 var result = await cmd.ExecuteScalarAsync();
-                Console.WriteLine("ASNSl Generated");
+                Console.WriteLine("ASNSl Generated  :" + result);
                 return Convert.ToInt32((decimal)result!);
             }
             catch (Exception ex)

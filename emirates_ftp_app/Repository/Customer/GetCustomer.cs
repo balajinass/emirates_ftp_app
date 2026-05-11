@@ -39,7 +39,7 @@ namespace emirates_ftp_app.Repository.Customer
                 {
                     var context = scope.ServiceProvider.GetRequiredService<NassDbContext>();
                     return await context.WEB_WMS_EDI_CONFIG
-                                        .Where(c => c.LOV_STATUS == "DISPLAY")
+                                        .Where(c => c.LOV_STATUS == "ACTIVE")
                                         .Include(c => c.MODULES!.Where(m => m.LOV_STATUS == "DISPLAY"))
                                         .ToListAsync();
                 }
@@ -66,7 +66,7 @@ namespace emirates_ftp_app.Repository.Customer
                 var context = scope.ServiceProvider.GetRequiredService<NassDbContext>();
 
                 var result = await context.WEB_WMS_EDI_CONFIG
-                    .Where(c => c.LOV_STATUS == "DISPLAY").Select(c => new web_wms_edi_config_model
+                    .Where(c => c.LOV_STATUS == "ACTIVE").Select(c => new web_wms_edi_config_model
                     {
                         PROJECT_ID = c.PROJECT_ID,
                         PROJECT_NAME = c.PROJECT_NAME,

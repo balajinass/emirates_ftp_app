@@ -67,7 +67,7 @@ namespace emirates_ftp_app.Repository.Inbound.SoCancel
                 cmd.CommandText = "SELECT SO_CANCEL_SEQ.nextval FROM DUAL";
 
                 var result = await cmd.ExecuteScalarAsync();
-                Console.WriteLine("SoCancel Sno Generated");
+                Console.WriteLine("SoCancel Sno Generated  :" + result);
                 return Convert.ToInt32((decimal)result!);
             }
             catch (Exception ex)

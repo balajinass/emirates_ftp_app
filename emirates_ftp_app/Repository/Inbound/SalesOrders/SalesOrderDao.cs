@@ -73,7 +73,7 @@ namespace emirates_ftp_app.Repository.Inbound.SalesOrders
                 cmd.CommandText = "SELECT SALES_SEQ.NEXTVAL FROM DUAL";
                 
                 var result = await cmd.ExecuteScalarAsync();
-                Console.WriteLine("SOSlNo Generated");
+                Console.WriteLine("SOSlNo Generated  :" + result);
                 return Convert.ToInt32((decimal)result!);
             }
             catch (Exception ex)

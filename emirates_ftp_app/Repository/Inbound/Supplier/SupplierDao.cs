@@ -68,7 +68,7 @@ namespace emirates_ftp_app.Repository.Inbound.Supplier
                 cmd.CommandText = "SELECT SUPP_SEQ.nextval FROM DUAL";
 
                 var result = await cmd.ExecuteScalarAsync();
-                Console.WriteLine("Supplier Sno Generated");
+                Console.WriteLine("Supplier Sno Generated  :" + result);
                 return Convert.ToInt32((decimal)result!);
             }
             catch (Exception ex)

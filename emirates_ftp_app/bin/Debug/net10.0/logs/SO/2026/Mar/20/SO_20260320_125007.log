@@ -1,0 +1,46 @@
+2026-03-20 12:50:08.8848|INFO|emirates_ftp_app.Program|Application started for module SO 
+2026-03-20 12:50:35.1160|ERROR|Microsoft.EntityFrameworkCore.Database.Connection|An error occurred using the connection to database '' on server 'SAASQC'. 
+2026-03-20 12:50:35.1322|ERROR|Microsoft.EntityFrameworkCore.Query|An exception occurred while iterating over the results of a query for context type 'emirates_ftp_app.Data.NassDbContext'.
+Oracle.ManagedDataAccess.Client.OracleException (0x80004005): ORA-12154: Cannot connect to database. Cannot find alias SAASQC in DataSources, , EZConnect.
+https://docs.oracle.com/error-help/db/ora-12154/
+ ---> OracleInternal.Network.NetworkException (0x80004005): ORA-12154: Cannot connect to database. Cannot find alias SAASQC in DataSources, , EZConnect.
+https://docs.oracle.com/error-help/db/ora-12154/
+   at OracleInternal.Network.AddressResolution..ctor(String TNSAlias, SqlNetOraConfig SNOConfig, String oraConConIdPrefix, String uniqueConnectionId, Object traceObj, OracleCommunication OC, Hashtable ObTnsHT, String ObTnsPt, Hashtable ObLdpHT, String NamesDirectoryPath, String instanceName, ConnectionOption CO, String ShardingKeyB64, String SuperShardingKeyB64, String ServerIs)
+   at OracleInternal.Network.OracleCommunication.Resolve(String tnsAlias, ConnectionOption& CO, INamingAdapter& addrNamingAdapter)
+   at OracleInternal.ConnectionPool.PoolManager`3.ResolveTnsAlias(ConnectionString cs, Object OC)
+   at OracleInternal.ServiceObjects.OracleConnectionImpl.Connect(ConnectionString cs, Boolean bOpenEndUserSession, OracleConnection connRefForCriteria, String instanceName, Boolean bAsync)
+   at OracleInternal.ConnectionPool.PoolManager`3.Get(ConnectionString csWithDiffOrNewPassw, Boolean bGetForApp, OracleConnection connRefForCriteria, String affinityInstanceName, Boolean bForceMatch, Boolean bAsync)
+   at OracleInternal.ConnectionPool.OraclePoolManager.Get(ConnectionString csWithNewPassw, Boolean bGetForApp, OracleConnection connRefForCriteria, String affinityInstanceName, Boolean bForceMatch, Boolean bAsync)
+   at OracleInternal.ConnectionPool.OracleConnectionDispenser`3.Get(ConnectionString cs, PM conPM, ConnectionString pmCS, OracleOpaqueString opaquePassw, OracleOpaqueString securedProxyPassw, OracleConnection connRefForCriteria, Boolean bAsync)
+   at OracleInternal.ServiceObjects.OracleConnectionInternal.OpenInternal(Boolean bAsync)
+   at OracleInternal.ServiceObjects.OracleConnectionInternal.Open()
+   at Oracle.ManagedDataAccess.Client.OracleConnection.Open()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenDbConnection(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternal(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.Open(Boolean errorsExpected)
+   at Oracle.EntityFrameworkCore.Storage.Internal.OracleRelationalCommandBuilderFactory.OracleRelationalCommandBuilder.OracleRelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.InitializeReader(Enumerator enumerator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.<>c.<MoveNext>b__21_0(DbContext _, Enumerator enumerator)
+   at Oracle.EntityFrameworkCore.Storage.Internal.OracleExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.MoveNext() Oracle.ManagedDataAccess.Client.OracleException (0x80004005): ORA-12154: Cannot connect to database. Cannot find alias SAASQC in DataSources, , EZConnect.
+https://docs.oracle.com/error-help/db/ora-12154/
+ ---> OracleInternal.Network.NetworkException (0x80004005): ORA-12154: Cannot connect to database. Cannot find alias SAASQC in DataSources, , EZConnect.
+https://docs.oracle.com/error-help/db/ora-12154/
+   at OracleInternal.Network.AddressResolution..ctor(String TNSAlias, SqlNetOraConfig SNOConfig, String oraConConIdPrefix, String uniqueConnectionId, Object traceObj, OracleCommunication OC, Hashtable ObTnsHT, String ObTnsPt, Hashtable ObLdpHT, String NamesDirectoryPath, String instanceName, ConnectionOption CO, String ShardingKeyB64, String SuperShardingKeyB64, String ServerIs)
+   at OracleInternal.Network.OracleCommunication.Resolve(String tnsAlias, ConnectionOption& CO, INamingAdapter& addrNamingAdapter)
+   at OracleInternal.ConnectionPool.PoolManager`3.ResolveTnsAlias(ConnectionString cs, Object OC)
+   at OracleInternal.ServiceObjects.OracleConnectionImpl.Connect(ConnectionString cs, Boolean bOpenEndUserSession, OracleConnection connRefForCriteria, String instanceName, Boolean bAsync)
+   at OracleInternal.ConnectionPool.PoolManager`3.Get(ConnectionString csWithDiffOrNewPassw, Boolean bGetForApp, OracleConnection connRefForCriteria, String affinityInstanceName, Boolean bForceMatch, Boolean bAsync)
+   at OracleInternal.ConnectionPool.OraclePoolManager.Get(ConnectionString csWithNewPassw, Boolean bGetForApp, OracleConnection connRefForCriteria, String affinityInstanceName, Boolean bForceMatch, Boolean bAsync)
+   at OracleInternal.ConnectionPool.OracleConnectionDispenser`3.Get(ConnectionString cs, PM conPM, ConnectionString pmCS, OracleOpaqueString opaquePassw, OracleOpaqueString securedProxyPassw, OracleConnection connRefForCriteria, Boolean bAsync)
+   at OracleInternal.ServiceObjects.OracleConnectionInternal.OpenInternal(Boolean bAsync)
+   at OracleInternal.ServiceObjects.OracleConnectionInternal.Open()
+   at Oracle.ManagedDataAccess.Client.OracleConnection.Open()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenDbConnection(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternal(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.Open(Boolean errorsExpected)
+   at Oracle.EntityFrameworkCore.Storage.Internal.OracleRelationalCommandBuilderFactory.OracleRelationalCommandBuilder.OracleRelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.InitializeReader(Enumerator enumerator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.<>c.<MoveNext>b__21_0(DbContext _, Enumerator enumerator)
+   at Oracle.EntityFrameworkCore.Storage.Internal.OracleExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.MoveNext()

@@ -1,0 +1,8 @@
+2026-03-20 12:53:32.5256|INFO|emirates_ftp_app.Program|Application started for module SO 
+2026-03-20 12:54:08.1052|INFO|myAppLoggerRules|Number of Customers : 1 
+2026-03-20 12:54:12.0769|INFO|myAppLoggerRules|PROJECT-NAME : LEEM 
+2026-03-20 12:54:34.4777|INFO|myAppLoggerRules|Connecting FTP... 
+2026-03-20 12:54:38.3586|INFO|myAppLoggerRules|FTP Connected 
+2026-03-20 12:54:41.5083|INFO|myAppLoggerRules|Reading /TEST folder 
+2026-03-20 12:54:47.7257|INFO|myAppLoggerRules|Total files availabe in FTP  : 0 
+2026-03-20 12:54:58.7684|INFO|myAppLoggerRules|Number of Sales Order in FTP : 0 
