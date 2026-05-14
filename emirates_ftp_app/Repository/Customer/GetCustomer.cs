@@ -45,12 +45,8 @@ namespace emirates_ftp_app.Repository.Customer
                 }
             }
             catch (Exception ex)
-            {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine("Error in GetListofCustomer: " + ex);
-                Console.ForegroundColor = previousColor;               
-                MyLogger.GetInstance().Error(ex.ToString());                
+            {                           
+                MyLogger.GetInstance().Error("Error in WEB_WMS_EDI_CONFIG: " + ex.ToString());                
                 return new List<web_wms_edi_config_model>();  
             }
 
@@ -106,12 +102,8 @@ namespace emirates_ftp_app.Repository.Customer
                 return result;
             }
             catch (Exception ex)
-            {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine("Error in GetListofCustomerOUTBOUND: " + ex);
-                Console.ForegroundColor = previousColor;
-                MyLogger.GetInstance().Error(ex.ToString());
+            {                
+                MyLogger.GetInstance().Error("Error in GetListofCustomerOUTBOUND: " + ex.ToString());
                 return new List<web_wms_edi_config_model>();
             }
         }
@@ -178,8 +170,11 @@ namespace emirates_ftp_app.Repository.Customer
                 };
 
                 await context.WMS_EDI_FTP.AddAsync(ediFtp_);
-                await context.SaveChangesAsync();
-                Console.WriteLine("Insert completed in WMS_EDI_FTP");
+                await context.SaveChangesAsync();               
+
+                MyLogger.GetInstance().Info("Values in Insert WMS_EDI_FTP - " + ediFtp_);
+
+                MyLogger.GetInstance().Info("Insert completed in WMS_EDI_FTP");
 
                 return ediFtp_;
             }
@@ -188,12 +183,8 @@ namespace emirates_ftp_app.Repository.Customer
                 MyLogger.GetInstance().Error($"Error processing file {oFiles.fileName}: {ex.Message}");
                 var exceptionHtml = await oCommon_.GenerateExceptionHtml("Insert error in WMS_EDI_FTP", ex);
                 await oCommon_.SendFinalMail($"Insert in WMS_EDI_FTP - {oFiles.fileName}", exceptionHtml, "ExceptionEmail");
-
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine($"Error in InsertEdiLog: {ex}");
-                Console.ForegroundColor = previousColor;               
-                MyLogger.GetInstance().Error(ex.ToString());
+                           
+                MyLogger.GetInstance().Error($"Error in InsertEdiLog: " + ex.ToString());
                 return null!;
             }
         }
@@ -211,7 +202,7 @@ namespace emirates_ftp_app.Repository.Customer
         }
         #endregion
 
-        public async Task<email_request_model?> GetEdiFileAsEmailRequestAsync(string fileName,string module)
+        public async Task<email_request_model?> GetEdiFileAsEmailRequestAsync(string fileName,string module,string FileStatus)
         {
             try
             {
@@ -225,7 +216,9 @@ namespace emirates_ftp_app.Repository.Customer
 
                 if (ediFtp == null)
                 {
-                    Console.WriteLine("No record found with the given filename");
+
+                    MyLogger.GetInstance().Info("No record found with the given filename");
+
                     return null;
                 }
 
@@ -235,7 +228,7 @@ namespace emirates_ftp_app.Repository.Customer
                     Module= module,
                     File_name = ediFtp.FILE_NAME,
                     Processed_On = ediFtp.FILE_UPLOAD_TIME?.ToString("yyyy-MM-dd HH:mm:ss"),
-                    Status = ediFtp.FILE_STATUS,
+                    Status = FileStatus,
                     Archive_Status = "True" , 
                     Company_Name=ediFtp.PRIMARY_COMPANY
                 };
@@ -243,12 +236,8 @@ namespace emirates_ftp_app.Repository.Customer
                 return emailRequest;
             }
             catch (Exception ex)
-            {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine($"Error in GetEdiFileAsEmailRequestAsync: {ex}");
-                Console.ForegroundColor = previousColor;                
-                MyLogger.GetInstance().Error(ex.ToString());
+            {             
+                MyLogger.GetInstance().Error($"Error in GetEdiFileAsEmailRequestAsync: " + ex.ToString());
                 return null;
             }
         }

@@ -208,13 +208,11 @@ namespace emirates_ftp_app.Middleware.Inbound
                     return (emailRequests, errors);
                 }
 
-                MyLogger.GetInstance().Info("Number of Customers : " + listOfCustomers.Count);
-                Console.WriteLine($"Number of Customers : " + listOfCustomers.Count);
+                MyLogger.GetInstance().Info("Number of Customers : " + listOfCustomers.Count);                
 
                 foreach (var customer in listOfCustomers)
                 {
-                    MyLogger.GetInstance().Info("PROJECT-NAME : " + customer.PROJECT_NAME);
-                    Console.WriteLine("PROJECT-NAME : " + customer.PROJECT_NAME);
+                    MyLogger.GetInstance().Info("PROJECT-NAME : " + customer.PROJECT_NAME);                   
 
                     var moduleConfig = customer.MODULES?.FirstOrDefault(m => m.MODULE_NAME == module);
                     if (moduleConfig == null) continue;
@@ -245,9 +243,7 @@ namespace emirates_ftp_app.Middleware.Inbound
                             Module       : {module}
                             File Name    : {file.fileName}
                             Start Time   : {fileStartTime:dd-MMM-yyyy HH:mm:ss}
-                            *************************************************************";
-
-                            Console.WriteLine(startLog);
+                            *************************************************************";                           
                             MyLogger.GetInstance().Info(startLog);
                             Console.ResetColor();
 
@@ -266,7 +262,6 @@ namespace emirates_ftp_app.Middleware.Inbound
                             }
 
                             MyLogger.GetInstance().Info($"Download Success: {file.fileName}");
-                            Console.WriteLine($"Download Success: {file.fileName}");
 
                             file.slNo = await oSoCancelDao_.GenerateSoCancelSlNo();
                             file.moduleType = "SOC - CUS TO EFS";
@@ -279,8 +274,7 @@ namespace emirates_ftp_app.Middleware.Inbound
                                 continue;
                             }
 
-                            MyLogger.GetInstance().Info("SalesOrderCancel - EDI Log Insert Success");
-                            Console.WriteLine("SalesOrderCancel - EDI Log Insert Success");
+                            MyLogger.GetInstance().Info("SalesOrderCancel - EDI Log Insert Success");                           
 
                             var csvData = await oCommon_.ReadCsvFileforSoCancel(customer, moduleConfig, file);
 
@@ -288,8 +282,7 @@ namespace emirates_ftp_app.Middleware.Inbound
                             {
                                 if (!await oSoCancelDao_.InsertSoCancelImport(csvData, ediFtp))
                                 {
-                                    errorPath = await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);
-                                    Console.Error.WriteLine($"InsertSoCancelImport failed for file {file.fileName}");
+                                    errorPath = await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);                                   
                                     throw new Exception($"InsertSoCancelImport failed for file {file.fileName}");
                                 }
                             }
@@ -312,13 +305,20 @@ namespace emirates_ftp_app.Middleware.Inbound
                             bool procedureSuccess = await oSoCancelDao_.ExecSoCancelImportProcedure(procedureInput);
 
                             if (procedureSuccess)
+                            {
                                 backupPath = await oFtp_.MoveFileToBackupFolder(customer, moduleConfig, file, credentials);
-                            else
-                                errorPath = await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);
+                                var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.fileName!, module, "COMPLETED");
+                                if (fileData != null)
+                                    emailRequests.Add(fileData);
+                            }
 
-                            var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.fileName!, module);
-                            if (fileData != null)
-                                emailRequests.Add(fileData);                            
+                            else
+                            {
+                                errorPath = await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);
+                                var fileDataerr = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.fileName!, module, "PENDING");
+                                if (fileDataerr != null)
+                                    emailRequests.Add(fileDataerr);
+                            }
 
                             // ====================================================
                             // END LOG
@@ -336,8 +336,7 @@ namespace emirates_ftp_app.Middleware.Inbound
                             Duration     : {totalSeconds} Seconds
                             Status       : SUCCESS
                             *************************************************************";
-
-                            Console.WriteLine(endLog);
+                            
                             MyLogger.GetInstance().Info(endLog);
                             Console.ResetColor();
                         }
@@ -356,8 +355,6 @@ namespace emirates_ftp_app.Middleware.Inbound
                             Error        : {ex.Message}
                             Time         : {DateTime.Now:dd-MMM-yyyy HH:mm:ss}
                             *************************************************************";
-
-                            Console.WriteLine(errorLog);
                             MyLogger.GetInstance().Error(errorLog);
                             Console.ResetColor();
 
@@ -371,19 +368,14 @@ namespace emirates_ftp_app.Middleware.Inbound
                     }
                 }
                 var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("SalesOrderCancel Creation Completed");
+                Console.ForegroundColor = ConsoleColor.Yellow;                
+                MyLogger.GetInstance().Info("SalesOrderCancel Creation Completed");
                 Console.ForegroundColor = previousColor;
             }
             catch (Exception ex)
             {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine($"Error in SoCancel Creation: {ex}");
-                Console.ForegroundColor = previousColor;
-
                 errors.Add($"Unhandled exception in SoCancel Creation: {ex.Message}");
-                MyLogger.GetInstance().Error("Error in SoCancel creation: " + ex);
+                MyLogger.GetInstance().Error($"Error in SoCancel Creation: " + ex.ToString());
             }
 
             return (emailRequests, errors);

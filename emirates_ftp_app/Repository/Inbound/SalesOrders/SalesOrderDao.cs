@@ -72,13 +72,13 @@ namespace emirates_ftp_app.Repository.Inbound.SalesOrders
                 await using var cmd = conn.CreateCommand();
                 cmd.CommandText = "SELECT SALES_SEQ.NEXTVAL FROM DUAL";
                 
-                var result = await cmd.ExecuteScalarAsync();
-                Console.WriteLine("SOSlNo Generated  :" + result);
+                var result = await cmd.ExecuteScalarAsync();               
+                MyLogger.GetInstance().Info("SOSlNo Generated  :" + result);
+
                 return Convert.ToInt32((decimal)result!);
             }
             catch (Exception ex)
-            {
-                Console.Error.WriteLine("Error in GenerateSOSlNo  :"+ ex);
+            {               
                 MyLogger.GetInstance().Error(ex.ToString());
                 return 0;
             }
@@ -149,18 +149,17 @@ namespace emirates_ftp_app.Repository.Inbound.SalesOrders
                         await context.WMS_EL_CLIENT_IMPORT.AddRangeAsync(entities);
                         await context.SaveChangesAsync();
                     }
-                    Console.WriteLine("Insert completed in WMS_EL_CLIENT_IMPORT");
+
+                    MyLogger.GetInstance().Info("Values in Insert WMS_EL_CLIENT_IMPORT - " + entities);
+
+                    MyLogger.GetInstance().Info("Insert completed in WMS_EL_CLIENT_IMPORT");
+
                     return (iRow > 0 && iRow == listofCsv_.Count);
                 }
             }
             catch (Exception ex)
-            {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine("Error in InsertClientImport  ;+" + ex);
-                Console.ForegroundColor = previousColor;
-               
-                MyLogger.GetInstance().Error(ex.ToString());
+            {               
+                MyLogger.GetInstance().Error("Error in WMS_EL_CLIENT_IMPORT;+" + ex.ToString());
                 return false;
             }
         }
@@ -187,17 +186,15 @@ namespace emirates_ftp_app.Repository.Inbound.SalesOrders
                     "BEGIN el_client_import(:fa_company_code, :fa_branch_code, :fa_location_code, :fa_sl_no); END;",
                     parameters
                 );
-                Console.WriteLine("Procedure Excecuted Successfully - el_client_import");
+
+                MyLogger.GetInstance().Info("Values in Procedure el_client_import - " + "  Company Code - " + oProInput_.FA_COMPANY_CODE + "  ,Branch Code -  +" + oProInput_.FA_BRANCH_CODE + "  ,Location Code - " + oProInput_.FA_LOCATION_CODE + "  ,SOURCE_SL_NO - " + oProInput_.FA_SL_NO );
+
+                MyLogger.GetInstance().Info("Procedure Excecuted Successfully - el_client_import");
                 return true;
             }
             catch (Exception ex)
-            {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine("Error in ExecClientImportProcedure  ;+" + ex);
-                Console.ForegroundColor = previousColor;
-                
-                MyLogger.GetInstance().Error(ex.ToString());
+            {              
+                MyLogger.GetInstance().Error("Error in ExecClientImportProcedure  ;" +ex.ToString());
                 return false;
             }
         }
@@ -242,7 +239,10 @@ namespace emirates_ftp_app.Repository.Inbound.SalesOrders
                             CUSTOMER_ORDER_NO = item?.CUSTOMERORDERNO,
                             CUSTOMER_ORDER_LINE_NO = item?.CUSTOMERORDERLINENO?.Substring(0, Math.Min(10, item.CUSTOMERORDERLINENO.Length)),
                             PART_CODE = item?.PARTCODE,
-                            ALLOCATED_QTY = int.TryParse(item?.ALLOCATEDQTY, out var qty) ? qty : 0,
+                            ALLOCATED_QTY = !string.IsNullOrWhiteSpace(item?.ALLOCATEDQTY?.Trim())
+                                && decimal.TryParse(item.ALLOCATEDQTY.Trim(), out var decQty)
+                                ? (int?)Decimal.ToInt32(decQty)
+                                : null,
                             PART_BATCH_NO = item?.PARTBATCHNO,
                             SERIAL_NO = item?.SERIALNO,
                             EXPIRY_DATE = expiryDate,
@@ -277,17 +277,16 @@ namespace emirates_ftp_app.Repository.Inbound.SalesOrders
                     await context.WMS_EL_SO_IMPORT.AddRangeAsync(entities);
                     await context.SaveChangesAsync();
                 }
-                Console.WriteLine("Insert completed in WMS_EL_SO_IMPORT");
+
+                MyLogger.GetInstance().Info("Values in Insert WMS_EL_SO_IMPORT - " + entities);
+
+                MyLogger.GetInstance().Info("Insert completed in WMS_EL_SO_IMPORT");
+
                 return true;
             }
             catch (Exception ex)
-            {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine("Error in InsertSOImport  ;+" + ex);
-                Console.ForegroundColor = previousColor;
-               
-                MyLogger.GetInstance().Error(ex.ToString());
+            {  
+                MyLogger.GetInstance().Error("Error in WMS_EL_SO_IMPORT ;" + ex.ToString());
                 return false;
             }
         }
@@ -314,17 +313,17 @@ namespace emirates_ftp_app.Repository.Inbound.SalesOrders
                     "BEGIN EL_SO_IMPORT(:fa_company_code, :fa_branch_code, :fa_location_code, :fa_sl_no); END;",
                     parameters
                 );
-                Console.WriteLine("Procedure Excecuted Successfully - EL_SO_IMPORT");
+
+                MyLogger.GetInstance().Info("Values in Procedure EL_SO_IMPORT - " + "  Company Code - " + oProInput_.FA_COMPANY_CODE + "  ,Branch Code -  +" + oProInput_.FA_BRANCH_CODE + "  ,Location Code - " + oProInput_.FA_LOCATION_CODE + "  ,SOURCE_SL_NO - " + oProInput_.FA_SL_NO
+                 );
+
+                MyLogger.GetInstance().Info("Procedure Excecuted Successfully - EL_SO_IMPORT");
+
                 return true;
             }
             catch (Exception ex)
             {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine("Error in ExecSOImportProcedure  ;+" + ex);
-                Console.ForegroundColor = previousColor;
-                
-                MyLogger.GetInstance().Error(ex.ToString());
+                MyLogger.GetInstance().Error("Error in ExecSOImportProcedure  ;" + ex.ToString());
                 return false;
             }
         }

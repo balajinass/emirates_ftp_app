@@ -67,8 +67,7 @@ namespace emirates_ftp_app.Middleware.Outbound
 
                     if (filesToProcess == null || filesToProcess.Count == 0)
                     {
-                        MyLogger.GetInstance().Info($"{module} - No files to process for PROJECT-NAME: {customer.PROJECT_NAME}");
-                        Console.WriteLine($"{module} - No files to process for PROJECT-NAME: {customer.PROJECT_NAME}");
+                        MyLogger.GetInstance().Info($"{module} - No files to process for PROJECT-NAME: {customer.PROJECT_NAME}");                      
                         continue;
                     }
 
@@ -81,22 +80,20 @@ namespace emirates_ftp_app.Middleware.Outbound
                         if (success)
                         {
                             await oComm_.UpdateFileStatus(file.FILE_NAME!,customer.PROJECT_NAME!);
-
-                            Console.WriteLine($"File {file.FILE_NAME} marked as processed.");
+                           
                             MyLogger.GetInstance().Info($"File {file.FILE_NAME} marked as processed.");
                         }
                         else
                         {
-                            Console.Error.WriteLine($"Failed to move file {file.FILE_NAME} via FTP.");
                             MyLogger.GetInstance().Error($"Failed to move file {file.FILE_NAME} via FTP.");
                         }
 
 
-                        var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.FILE_NAME!, module);
-                        if (fileData != null)
-                        {
-                            emailRequests.Add(fileData);
-                        }
+                        //var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.FILE_NAME!, module);
+                        //if (fileData != null)
+                        //{
+                        //    emailRequests.Add(fileData);
+                        //}
                     }
 
                     if (emailRequests.Count > 0)
@@ -113,8 +110,7 @@ namespace emirates_ftp_app.Middleware.Outbound
                 string exceptionHtml = await oCommon_.GenerateExceptionHtml("DN Upload File", ex);
                 //await oCommon_.SendFinalMail("DN Upload File", exceptionHtml);
 
-                #endregion
-                Console.Error.WriteLine("Error in DN Upload File: " + ex);
+                #endregion               
                 MyLogger.GetInstance().Error("Error in DN Upload File: " + ex);
             }
         }
@@ -135,13 +131,11 @@ namespace emirates_ftp_app.Middleware.Outbound
                     return (emailRequests, errors);
                 }
 
-                MyLogger.GetInstance().Info("Number of Customers: " + customers.Count);
-                Console.WriteLine($"Number of Customers: " + customers.Count);
+                MyLogger.GetInstance().Info("Number of Customers: " + customers.Count);               
 
                 foreach (var customer in customers)
                 {
-                    MyLogger.GetInstance().Info("PROJECT-NAME: " + customer.PROJECT_NAME);
-                    Console.WriteLine($"PROJECT-NAME: " + customer.PROJECT_NAME);
+                    MyLogger.GetInstance().Info("PROJECT-NAME: " + customer.PROJECT_NAME);                   
 
                     if (customer.OUTBOUND == null) continue;
 
@@ -153,8 +147,7 @@ namespace emirates_ftp_app.Middleware.Outbound
 
                     if (filesToProcess == null || filesToProcess.Count == 0)
                     {
-                        MyLogger.GetInstance().Info($"{module} - No files to process for PROJECT-NAME: {customer.PROJECT_NAME}");
-                        Console.WriteLine($"{module} - No files to process for PROJECT-NAME: {customer.PROJECT_NAME}");
+                        MyLogger.GetInstance().Info($"{module} - No files to process for PROJECT-NAME: {customer.PROJECT_NAME}");                       
                         continue;
                     }
 
@@ -165,35 +158,34 @@ namespace emirates_ftp_app.Middleware.Outbound
                         if (success)
                         {
                             await oComm_.UpdateFileStatus(file.FILE_NAME!, customer.PROJECT_NAME!);
+
                             MyLogger.GetInstance().Info($"File {file.FILE_NAME} marked as processed.");
-                            Console.WriteLine($"File {file.FILE_NAME} marked as processed.");
+                           
+                            var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.FILE_NAME!, module,"COMPLETED");
+                            if (fileData != null)
+                                emailRequests.Add(fileData);
                         }
                         else
                         {
                             errors.Add($"Failed to move file {file.FILE_NAME} via FTP for PROJECT-NAME: {customer.PROJECT_NAME}");
+
                             MyLogger.GetInstance().Error($"Failed to move file {file.FILE_NAME} via FTP.");
-                            Console.Error.WriteLine($"Failed to move file {file.FILE_NAME} via FTP.");
+                           
+                            var fileDataerr = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.FILE_NAME!, module, "PENDING");
+                            if (fileDataerr != null)
+                                emailRequests.Add(fileDataerr);
                         }
 
-                        var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.FILE_NAME!, module);
-                        if (fileData != null)
-                            emailRequests.Add(fileData);
+                        
                     }
                 }
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("DN Upload OutBound Completed");
-                Console.ForegroundColor = previousColor;
+
+                MyLogger.GetInstance().Info("DN Upload OutBound Completed");
             }
             catch (Exception ex)
             {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine($"Error in  DN Upload File: {ex}");
-                Console.ForegroundColor = previousColor;
-
                 errors.Add($"Unhandled exception in DN Upload File: {ex.Message}");
-                MyLogger.GetInstance().Error("Error in DN Upload File: " + ex);
+                MyLogger.GetInstance().Error($"Error in  DN Upload File:" + ex.ToString());
             }
 
             return (emailRequests, errors);

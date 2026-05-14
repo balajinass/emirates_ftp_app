@@ -163,19 +163,25 @@ namespace emirates_ftp_app.Middleware.Inbound
                         if (bInsert_)
                         {
                             sFileMovetoBackup = await oFtp_.MoveFileToBackupFolder(oCustomer_, oModule_, oFiles, credentials);
+                            var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(oFiles.fileName!, module,"COMPLETED");
+                            if (fileData != null)
+                            {
+                                emailRequests.Add(fileData);
+                            }
+
                         }
                         else
                         {
                             sFileMovetoError = await oFtp_.MoveFiletoErrorFolder(oCustomer_, oModule_, oFiles, credentials);
+                            var fileDataerr = await oCommonManager_.GetEdiFileAsEmailRequestAsync(oFiles.fileName!, module, "PENDING");
+                            if (fileDataerr != null)
+                            {
+                                emailRequests.Add(fileDataerr);
+                            }
                         }
                         #endregion
 
-
-                        var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(oFiles.fileName!, module);
-                        if (fileData != null)
-                        {
-                            emailRequests.Add(fileData);
-                        }
+                       
                     }
 
                     if (emailRequests.Count > 0)
@@ -250,15 +256,14 @@ namespace emirates_ftp_app.Middleware.Inbound
                             File Name    : {file.fileName}
                             Start Time   : {fileStartTime:dd-MMM-yyyy HH:mm:ss}
                             *************************************************************";
-
-                            Console.WriteLine(startLog);
+                           
                             MyLogger.GetInstance().Info(startLog);
                             Console.ResetColor();
 
                             // ====================================================
                             // INTERNAL LOGIC (Download / EDI / CSV / Import / Procedure)
                             // ====================================================
-                            
+
                             string backupPath = string.Empty;
                             string errorPath = string.Empty;
 
@@ -314,14 +319,22 @@ namespace emirates_ftp_app.Middleware.Inbound
                             bool procedureSuccess = await oSuppDao_.ExecSUPPImportProcedure(procedureInput);
 
                             if (procedureSuccess)
-                                backupPath = await oFtp_.MoveFileToBackupFolder(customer, moduleConfig, file, credentials);
-                            else
-                                errorPath = await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);
-
-                            var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.fileName!, module);
+                            { 
+                            backupPath = await oFtp_.MoveFileToBackupFolder(customer, moduleConfig, file, credentials);
+                            var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.fileName!, module, "COMPLETED");
                             if (fileData != null)
                                 emailRequests.Add(fileData);
-                           
+                            }
+
+                            else 
+                            {
+                            errorPath = await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);
+                            var fileDataerr = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.fileName!, module, "PENDING");
+                            if (fileDataerr != null)
+                                emailRequests.Add(fileDataerr);
+                            }
+
+
                             // ====================================================
                             // END LOG
                             // ====================================================
@@ -338,8 +351,6 @@ namespace emirates_ftp_app.Middleware.Inbound
                                 Duration     : {totalSeconds} Seconds
                                 Status       : SUCCESS
                                 *************************************************************";
-
-                            Console.WriteLine(endLog);
                             MyLogger.GetInstance().Info(endLog);
                             Console.ResetColor();
                         }
@@ -358,8 +369,6 @@ namespace emirates_ftp_app.Middleware.Inbound
                                 Error        : {ex.Message}
                                 Time         : {DateTime.Now:dd-MMM-yyyy HH:mm:ss}
                                 *************************************************************";
-
-                            Console.WriteLine(errorLog);
                             MyLogger.GetInstance().Error(errorLog);
                             Console.ResetColor();
 
@@ -373,9 +382,9 @@ namespace emirates_ftp_app.Middleware.Inbound
                     }
                 }
                 var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Supplier Creation Completed");
+                Console.ForegroundColor = ConsoleColor.Yellow;               
                 Console.ForegroundColor = previousColor;
+                MyLogger.GetInstance().Info("Supplier Creation Completed");
             }
             catch (Exception ex)
             {

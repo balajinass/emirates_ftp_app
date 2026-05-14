@@ -66,18 +66,14 @@ namespace emirates_ftp_app.Repository.Inbound.Asn
                 await using var cmd = conn.CreateCommand();
                 cmd.CommandText = "SELECT ASN_SEQ.NEXTVAL SL_NO FROM DUAL";
 
-                var result = await cmd.ExecuteScalarAsync();
-                Console.WriteLine("ASNSl Generated  :" + result);
+                var result = await cmd.ExecuteScalarAsync();               
+                MyLogger.GetInstance().Info("ASNSl Generated  :" + result);
+
                 return Convert.ToInt32((decimal)result!);
             }
             catch (Exception ex)
-            {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine("Error in GenerateASNSlNo  :" + ex);
-                Console.ForegroundColor = previousColor;
-                
-                MyLogger.GetInstance().Error(ex.ToString());
+            {                
+                MyLogger.GetInstance().Error("Error in GenerateASNSlNo  :" + ex.ToString());
                 return 0;
             }
         }
@@ -148,19 +144,15 @@ namespace emirates_ftp_app.Repository.Inbound.Asn
                         await context.WMS_EL_PO_IMPORT.AddAsync(entity);
                         iRow++;
                     }                    
-                    int result = await context.SaveChangesAsync();
-                    Console.WriteLine($"Insert Completed in WMS_EL_PO_IMPORT");
+                    int result = await context.SaveChangesAsync();                   
+
+                    MyLogger.GetInstance().Info($"Insert Completed in WMS_EL_PO_IMPORT");
                     bInsert = result > 0;
                 }
             }
             catch (Exception ex)
-            {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine("Error in WMS_EL_PO_IMPORT  :" + ex);
-                Console.ForegroundColor = previousColor;
-                
-                MyLogger.GetInstance().Error(ex.Message);
+            {  
+                MyLogger.GetInstance().Error("Error in WMS_EL_PO_IMPORT  :" + ex.Message);
                 bInsert = false;
             }
 
@@ -189,18 +181,14 @@ namespace emirates_ftp_app.Repository.Inbound.Asn
                     parameters
                 );
 
-                MyLogger.GetInstance().Info("Procedure Executed Successfully - EL_PO_IMPORT");
-                Console.WriteLine($"Procedure Executed Successfully - EL_PO_IMPORT");
+                MyLogger.GetInstance().Info("Values in Procedure EL_PO_IMPORT - " + "  Company Code - " + oProInput_.FA_COMPANY_CODE + "  ,Branch Code -  +" + oProInput_.FA_BRANCH_CODE + "  ,Location Code - " + oProInput_.FA_LOCATION_CODE + "  ,SOURCE_SL_NO - " + oProInput_.FA_SL_NO);
+
+                MyLogger.GetInstance().Info($"Procedure Executed Successfully - EL_PO_IMPORT");
                 return true;
             }
             catch (Exception ex)
-            {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine("Error in execASNImportProcedure: " + ex);
-                Console.ForegroundColor = previousColor;
-                
-                MyLogger.GetInstance().Error(ex.ToString());
+            {  
+                MyLogger.GetInstance().Error("Error in Exec EL_PO_IMPORT: " + ex.ToString());
                 return false;
             }
         }

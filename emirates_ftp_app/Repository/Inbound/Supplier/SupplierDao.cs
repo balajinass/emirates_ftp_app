@@ -67,18 +67,14 @@ namespace emirates_ftp_app.Repository.Inbound.Supplier
                 await using var cmd = conn.CreateCommand();
                 cmd.CommandText = "SELECT SUPP_SEQ.nextval FROM DUAL";
 
-                var result = await cmd.ExecuteScalarAsync();
-                Console.WriteLine("Supplier Sno Generated  :" + result);
+                var result = await cmd.ExecuteScalarAsync();                
+                MyLogger.GetInstance().Info("Supplier Sno Generated  :" + result);
                 return Convert.ToInt32((decimal)result!);
             }
             catch (Exception ex)
             {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine("Error in Supplier Sno Generated  :" + ex);
-                Console.ForegroundColor = previousColor;
                
-                MyLogger.GetInstance().Error(ex.ToString());
+                MyLogger.GetInstance().Error("Error in Supplier Sno Generated  :" + ex.ToString());
                 return 0;
             }
         }
@@ -105,8 +101,6 @@ namespace emirates_ftp_app.Repository.Inbound.Supplier
                             skip = false;
                             continue;
                         }
-
-                        MyLogger.GetInstance().Info("RowNo: " + iRow);
 
                         var entity = new wms_el_supplier_import
                         {
@@ -153,17 +147,15 @@ namespace emirates_ftp_app.Repository.Inbound.Supplier
                     
                     await context.SaveChangesAsync();
 
+                    MyLogger.GetInstance().Info("Insert completed in WMS_EL_SUPPLIER_IMPORT");
+
                     return true;
+                    
                 }
             }
             catch (Exception ex)
-            {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine("Error in InsertSupplierImport  :" + ex);
-                Console.ForegroundColor = previousColor;
-               
-                MyLogger.GetInstance().Error(ex.ToString());
+            {               
+                MyLogger.GetInstance().Error("Error in InsertSupplierImport  :" + ex.ToString());
                 return false;
             }
         }
@@ -190,18 +182,15 @@ namespace emirates_ftp_app.Repository.Inbound.Supplier
                     parameters
                 );
 
+                MyLogger.GetInstance().Info("Values for Procedure EL_SUPPLIER_IMPORT - " + "  Company Code - " + oProInput_.FA_COMPANY_CODE + "  ,Branch Code -  +" + oProInput_.FA_BRANCH_CODE + "  ,Location Code - " + oProInput_.FA_LOCATION_CODE + "  ,SOURCE_SL_NO - " + oProInput_.FA_SL_NO);
+
                 MyLogger.GetInstance().Info("Procedure Executed Successfully - EL_SUPPLIER_IMPORT");
-                Console.WriteLine($"Procedure Executed Successfully - EL_SUPPLIER_IMPORT");
+                
                 return true;
             }
             catch (Exception ex)
-            {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine("Error in ExecSUPPImportProcedure: " + ex);
-                Console.ForegroundColor = previousColor;
-                
-                MyLogger.GetInstance().Error(ex.ToString());
+            {                
+                MyLogger.GetInstance().Error("Error in Exec EL_SUPPLIER_IMPORT: " + ex.ToString());
                 return false;
             }
         }

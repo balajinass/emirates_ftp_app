@@ -1,4 +1,6 @@
 ﻿using emirates_ftp_app.Data;
+using emirates_ftp_app.Log;
+
 //using emirates_ftp_app.EmailRepository.EmaillogInterface;
 //using emirates_ftp_app.EmailRepository.EmailSendService;
 //using emirates_ftp_app.EmailRepository.EmailSendWithLogService;
@@ -11,6 +13,7 @@ using emirates_ftp_app.Repository.CommonFunctions;
 using emirates_ftp_app.Repository.Customer;
 using emirates_ftp_app.Repository.FtpConnection;
 using emirates_ftp_app.Repository.Inbound.Asn;
+using emirates_ftp_app.Repository.Inbound.CustomerCreation;
 using emirates_ftp_app.Repository.Inbound.SalesOrders;
 using emirates_ftp_app.Repository.Inbound.SoCancel;
 using emirates_ftp_app.Repository.Inbound.Supplier;
@@ -33,16 +36,14 @@ namespace emirates_ftp_app
         {            
             string moduleName = string.Empty;
             //"SO", "ASN", "SUPPLIER", "SOCANCEL","DNUPLOAD", "PUTAWAY", "STOCKTRANSFER"
-            //args = new[] { "PUTAWAY" }; // dev - only test input
+            //args = new[] { "CUSTOMERCREATION" }; // dev - only test input
             string allRows = "";
             string allErrors = "";
             if (args == null || args.Length == 0 || string.IsNullOrWhiteSpace(args[0]))
             {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("WARNING: Module name argument is required.");
-                Console.WriteLine("Usage: emirates_ftp_app <MODULE_NAME>");
-                Console.WriteLine("Example: emirates_ftp_app SKU");
-                Console.ResetColor();
+                MyLogger.GetInstance().Info("WARNING: Module name argument is required.");
+                MyLogger.GetInstance().Info("Usage: emirates_ftp_app <MODULE_NAME>");
+                MyLogger.GetInstance().Info("Example: emirates_ftp_app SKU");
 
                 Environment.ExitCode = 1;
 
@@ -57,7 +58,9 @@ namespace emirates_ftp_app
             GlobalDiagnosticsContext.Set("ModuleName", moduleName);
             GlobalDiagnosticsContext.Set("RunStamp", runStamp);
             var configPath = System.IO.Path.Combine(AppContext.BaseDirectory, "nlog.config");
-            Console.WriteLine("NLog config path: " + configPath);
+            
+            MyLogger.GetInstance().Info("NLog config path: " + configPath);
+
             var Logger = LogManager.Setup()
                 .LoadConfigurationFromFile(System.IO.Path.Combine(AppContext.BaseDirectory, "nlog.config"), optional: false)
                 .GetCurrentClassLogger();
@@ -99,10 +102,10 @@ namespace emirates_ftp_app
                         var primaryCs = context.Configuration.GetConnectionString("PrimaryConnection");
                         var nassCs = context.Configuration.GetConnectionString("NassConnection");
                         //var emailcs = context.Configuration.GetConnectionString("EmailConnection");
-
-                        Console.WriteLine("PrimaryConnection = " + (string.IsNullOrWhiteSpace(primaryCs) ? "NULL" : "FOUND"));
-                        Console.WriteLine("NassConnection    = " + (string.IsNullOrWhiteSpace(nassCs) ? "NULL" : "FOUND"));
-                       // Console.WriteLine("EmailConnection    = " + (string.IsNullOrWhiteSpace(emailcs) ? "NULL" : "FOUND"));
+                      
+                        // Console.WriteLine("EmailConnection    = " + (string.IsNullOrWhiteSpace(emailcs) ? "NULL" : "FOUND"));
+                        MyLogger.GetInstance().Info("PrimaryConnection = " + (string.IsNullOrWhiteSpace(primaryCs) ? "NULL" : "FOUND"));
+                        MyLogger.GetInstance().Info("NassConnection    = " + (string.IsNullOrWhiteSpace(nassCs) ? "NULL" : "FOUND"));
 
                         if (string.IsNullOrWhiteSpace(primaryCs))
                             throw new InvalidOperationException("Connection string 'PrimaryConnection' not found.");
@@ -132,11 +135,14 @@ namespace emirates_ftp_app
                         services.AddScoped<SalesOrder>();
                         services.AddScoped<ISalesOrderDao, SalesOrderDao>();
                         services.AddScoped<AdvanceShippingNotice>();
+                        services.AddScoped<CustomerCreation>();
+
                         services.AddScoped<IASNDao, ASNDao>();
                         services.AddScoped<Supplier>();
                         services.AddScoped<ISupplierDao, SupplierDao>();
                         services.AddScoped<SoCancel>();
                         services.AddScoped<ISoCancelDao, SoCancelDao>();
+                        services.AddScoped<ICusCreationDao, CusCreationDao>();
 
                         //OutBound//                        
                         services.AddScoped<ICommonDao, CommonDao>();
@@ -198,7 +204,16 @@ namespace emirates_ftp_app
                                 break;
                             }
 
-                        case "DNUPLOAD":
+                    case "CUSTOMERCREATION":
+                        {
+                            var oSoc = host.Services.GetRequiredService<CustomerCreation>();
+                            var (soData, soErrors) = await oSoc.CustomerCreations("CUSTOMERCREATION");
+                            allRows += await oCommon_.GenerateSummaryTableRows(soData);
+                            allErrors += string.Join("<br/><hr/><br/>", soErrors);
+                            break;
+                        }
+
+                    case "DNUPLOAD":
                             {
                                 var oDnu = host.Services.GetRequiredService<DNUpload>();
                                 var (soData, soErrors) = await oDnu.DNUploadFile("DN");
@@ -237,19 +252,19 @@ namespace emirates_ftp_app
                     string finalEmailHtml = await oCommon_.GenerateSummaryEmailHtml(allRows);
                     string subject = $"EMIRATES-EDI-FTP-at {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
                     await oCommon_.SendFinalMail(subject, finalEmailHtml,"SummaryEmail");
-                }
-                else
-                {                    
-                    string noFilesHtml = "<p>No files were found to process for any module.</p>";
-                    string subject = $"EMIRATES-EDI-FTP-No-Files-at {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
-                    await oCommon_.SendFinalMail(subject, noFilesHtml, "SummaryEmail");
-                }
+                }                
 
                 if (!string.IsNullOrEmpty(allErrors))
                 {
                     var errorHtml = await oCommon_.GenerateExceptionHtml("Modules Errors", new Exception(allErrors));
                     await oCommon_.SendFinalMail("Processing Files - Errors", errorHtml, "ExceptionEmail");
                 }
+                //if (string.IsNullOrEmpty(allRows) && string.IsNullOrEmpty(allErrors))
+                //{                   
+                //    string noFilesHtml = "<p>No files were found to process for " + moduleName + " any module.</p>";
+                //    string subject = $"EMIRATES-EDI-FTP-No-Files-at {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
+                //    await oCommon_.SendFinalMail(subject, noFilesHtml, "SummaryEmail");
+                //}
 
                 LogManager.Shutdown();
             }

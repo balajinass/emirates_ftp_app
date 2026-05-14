@@ -142,19 +142,19 @@ namespace emirates_ftp_app.Repository.FtpConnection
                 .Replace("ftp://", "")
                 .TrimEnd('/');
 
-             if (!string.IsNullOrWhiteSpace(oCustomer_.FTP_PORT))
-             {
-                 host = $"{host}:{oCustomer_.FTP_PORT}";
-             }
+             //if (!string.IsNullOrWhiteSpace(oCustomer_.FTP_PORT))
+             //{
+             //    host = $"{host}:{oCustomer_.FTP_PORT}";
+             //}
 
                 string path = oModule_.FTP_FILE_PATH!;
                 string prefix = module;
 
-                Console.WriteLine("Fetching filtered file list...");
-               
-                var fileNames = await ListCsvFilesPrefixAsync(host, path, credentials, prefix);
+                MyLogger.GetInstance().Info("Fetching filtered file list...");
 
-                Console.WriteLine("Total "+ module +" files : " + fileNames.Count);
+                var fileNames = await ListCsvFilesPrefixAsync(host, path, credentials, prefix);
+               
+                MyLogger.GetInstance().Info("Total " + module + " files : " + fileNames.Count);
 
                 using var client = new FtpClient(host, credentials.UserName, credentials.Password);
                 client.Config.DataConnectionType = FtpDataConnectionType.AutoPassive;
@@ -186,18 +186,12 @@ namespace emirates_ftp_app.Repository.FtpConnection
                     listInput.Add(oInput);
                 }
                 if(fileNames.Count == 0)
-                {
-                    Console.WriteLine("No files found in FTP Folder - " + path);
+                {  
                     MyLogger.GetInstance().Info("No files found in FTP Folder - " + path);
                 }
             }
             catch (Exception ex)
-            {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Exception in GetFilesfromFTP - " + ex.Message);
-                Console.ForegroundColor = previousColor;
-                
+            {                
                 MyLogger.GetInstance().Error("Exception in GetFilesfromFTP - " + ex.Message);
             }
 
@@ -251,8 +245,6 @@ namespace emirates_ftp_app.Repository.FtpConnection
                 if (!Directory.Exists(sLocalFolderPath))
                 {
                     Directory.CreateDirectory(sLocalFolderPath);
-
-                    Console.WriteLine($"Local folder created : {sLocalFolderPath}");
                     MyLogger.GetInstance().Info($"Local folder created : {sLocalFolderPath}");
                 }
 
@@ -278,25 +270,14 @@ namespace emirates_ftp_app.Repository.FtpConnection
                     }
                 }
 
-                Console.ForegroundColor = ConsoleColor.Green;
-
-                Console.WriteLine($"File Download Completed : {oFile.fileName}");
+                Console.ForegroundColor = ConsoleColor.Green;               
                 MyLogger.GetInstance().Info($"File Download Completed : {oFile.fileName}");
-
                 Console.ResetColor();
 
                 return true;
             }
             catch (Exception ex)
             {
-                var previousColor = Console.ForegroundColor;
-
-                Console.ForegroundColor = ConsoleColor.Yellow;
-
-                Console.WriteLine($"Exception in DownloadFile - {oFile.fileName} - {ex.Message}");
-
-                Console.ForegroundColor = previousColor;
-
                 MyLogger.GetInstance().Error(
                     $"Exception in DownloadFile - {oFile.fileName} - {ex.Message}");
 
@@ -322,11 +303,6 @@ namespace emirates_ftp_app.Repository.FtpConnection
             }
             catch (Exception ex)
             {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Exception while MoveFiletoBackupFolder - " + ex.Message);
-                Console.ForegroundColor = previousColor;
-
                 MyLogger.GetInstance().Error("Exception while MoveFiletoBackupFolder - " + ex.Message);
                 return request;
             }
@@ -353,11 +329,6 @@ namespace emirates_ftp_app.Repository.FtpConnection
             }
             catch (Exception ex)
             {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Exception while MoveFiletoBackupFolder - " + ex.Message);
-                Console.ForegroundColor = previousColor;
-
                 MyLogger.GetInstance().Error("Exception while MoveFiletoBackupFolder - " + ex.Message);
                 return "ERROR~" + ex.Message;
             }
@@ -396,11 +367,6 @@ namespace emirates_ftp_app.Repository.FtpConnection
             }
             catch (Exception ex)
             {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Exception while SendFiletoBackupFolder - " + ex.Message);
-                Console.ForegroundColor = previousColor;
-
                 MyLogger.GetInstance().Error("Exception while SendFiletoBackupFolder - " + ex.Message);
                 return "ERROR~" + ex.Message;
             }
@@ -440,11 +406,6 @@ namespace emirates_ftp_app.Repository.FtpConnection
             }
             catch (Exception ex)
             {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Exception while DeleteSourceFile - " + ex.Message);
-                Console.ForegroundColor = previousColor;
-
                 MyLogger.GetInstance().Error("Exception while DeleteSourceFile - " + ex.Message);
                 return "ERROR~" + ex.Message;
             }
@@ -467,11 +428,6 @@ namespace emirates_ftp_app.Repository.FtpConnection
             }
             catch (Exception ex)
             {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Exception while MoveFiletoErrorFolder - " + ex.Message);
-                Console.ForegroundColor = previousColor;
-
                 MyLogger.GetInstance().Error("Exception while MoveFiletoErrorFolder - " + ex.Message);
                 return "ERROR~" + ex.Message;
             }
@@ -505,11 +461,6 @@ namespace emirates_ftp_app.Repository.FtpConnection
             }
             catch (Exception ex)
             {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Exception while SendFiletoErrorFolder - " + ex.Message);
-                Console.ForegroundColor = previousColor;
-
                 MyLogger.GetInstance().Error("Exception while SendFiletoErrorFolder - " + ex.Message);
                 return "ERROR~" + ex.Message;
             }
@@ -540,10 +491,6 @@ namespace emirates_ftp_app.Repository.FtpConnection
             }
             catch (Exception ex)
             {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Exception while DeleteErrorFile - " + ex.Message);
-                Console.ForegroundColor = previousColor;
 
                 MyLogger.GetInstance().Error("Exception while DeleteErrorFile - " + ex.Message);
                 return "ERROR~" + ex.Message;
@@ -572,13 +519,11 @@ namespace emirates_ftp_app.Repository.FtpConnection
 
             if (status != FtpStatus.Success)
             {
-                Console.WriteLine($"Failed to upload file: {fileName}");
-                return false;
+                    MyLogger.GetInstance().Info($"Failed to upload file: {fileName}");
+                    return false;
             }
-
-            Console.WriteLine($"File uploaded successfully: {fileName}");
-
-            if (File.Exists(localFullPath))
+                MyLogger.GetInstance().Info($"File uploaded successfully: {fileName}");
+                if (File.Exists(localFullPath))
             {
                 File.Delete(localFullPath);
             }
@@ -587,12 +532,6 @@ namespace emirates_ftp_app.Repository.FtpConnection
             }
             catch (Exception ex)
             {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Error in FileContentMoveFtp:- " + ex.Message);
-                Console.ForegroundColor = previousColor;
-
-                Console.WriteLine("Error in FileContentMoveFtp: " + ex.Message);
                 MyLogger.GetInstance().Error("Error in FileContentMoveFtp: " + ex.Message);
                 success = false;
             }

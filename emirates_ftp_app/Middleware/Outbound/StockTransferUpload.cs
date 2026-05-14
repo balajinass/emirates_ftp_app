@@ -84,11 +84,11 @@ namespace emirates_ftp_app.Middleware.Outbound
                             Console.Error.WriteLine($"Failed to move file {file.FILE_NAME} via FTP.");
                             MyLogger.GetInstance().Error($"Failed to move file {file.FILE_NAME} via FTP.");
                         }
-                        var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.FILE_NAME!, module);
-                        if (fileData != null)
-                        {
-                            emailRequests.Add(fileData);
-                        }
+                        //var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.FILE_NAME!, module);
+                        //if (fileData != null)
+                        //{
+                        //    emailRequests.Add(fileData);
+                        //}
                     }
 
                     if (emailRequests.Count > 0)
@@ -128,13 +128,11 @@ namespace emirates_ftp_app.Middleware.Outbound
                     return (emailRequests, errors);
                 }
 
-                MyLogger.GetInstance().Info("Number of Customers: " + customers.Count);
-                Console.WriteLine("Number of Customers: " + customers.Count);
+                MyLogger.GetInstance().Info("Number of Customers: " + customers.Count);               
 
                 foreach (var customer in customers)
                 {
-                    MyLogger.GetInstance().Info("PROJECT-NAME: " + customer.PROJECT_NAME);
-                    Console.WriteLine("PROJECT-NAME: " + customer.PROJECT_NAME);
+                    MyLogger.GetInstance().Info("PROJECT-NAME: " + customer.PROJECT_NAME);                   
 
                     if (customer.OUTBOUND == null) continue;
 
@@ -146,8 +144,7 @@ namespace emirates_ftp_app.Middleware.Outbound
                     var filesToProcess = await oComm_.GetFileContent(customer, module);
                     if (filesToProcess == null || filesToProcess.Count == 0)
                     {
-                        MyLogger.GetInstance().Info($"{module} - No files to process for PROJECT-NAME: {customer.PROJECT_NAME}");
-                        Console.WriteLine($"{module} - No files to process for PROJECT-NAME: {customer.PROJECT_NAME}");
+                        MyLogger.GetInstance().Info($"{module} - No files to process for PROJECT-NAME: {customer.PROJECT_NAME}");                        
                         continue;
                     }
 
@@ -158,33 +155,35 @@ namespace emirates_ftp_app.Middleware.Outbound
                         if (success)
                         {
                             await oComm_.UpdateFileStatus(file.FILE_NAME!, customer.PROJECT_NAME!);
+
                             MyLogger.GetInstance().Info($"File {file.FILE_NAME} marked as processed.");
-                            Console.WriteLine($"File {file.FILE_NAME} marked as processed.");
+                           
+                            var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.FILE_NAME!, module,"COMPLETED");
+                            if (fileData != null)
+                                emailRequests.Add(fileData);
                         }
                         else
                         {
                             errors.Add($"Failed to move file {file.FILE_NAME} via FTP for PROJECT-NAME: {customer.PROJECT_NAME}");
+
                             MyLogger.GetInstance().Error($"Failed to move file {file.FILE_NAME} via FTP.");
-                            Console.Error.WriteLine($"Failed to move file {file.FILE_NAME} via FTP.");
+                           
+                            var fileDataerr = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.FILE_NAME!, module, "PENDING");
+                            if (fileDataerr != null)
+                                emailRequests.Add(fileDataerr);
                         }
 
-                        var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.FILE_NAME!, module);
-                        if (fileData != null)
-                            emailRequests.Add(fileData);
+                        
                     }
                 }
                 var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Stock Transfer OutBound Completed");
+                Console.ForegroundColor = ConsoleColor.Yellow;                
                 Console.ForegroundColor = previousColor;
+
+                MyLogger.GetInstance().Info("Stock Transfer OutBound Completed");
             }
             catch (Exception ex)
             {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine($"Error in  Stock Transfer Upload File: {ex}");
-                Console.ForegroundColor = previousColor;
-
                 errors.Add($"Unhandled exception in Stock Transfer Upload File: {ex.Message}");
                 MyLogger.GetInstance().Error("Error in StockTransfer Upload File: " + ex);
             }

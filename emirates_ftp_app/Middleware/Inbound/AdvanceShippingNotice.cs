@@ -194,13 +194,11 @@ namespace emirates_ftp_app.Middleware.Inbound
                     return (emailRequests, errors);
                 }
 
-                MyLogger.GetInstance().Info("Number of Customers : " + listOfCustomers.Count);
-                Console.WriteLine($"Number of Customers : " + listOfCustomers.Count);
+                MyLogger.GetInstance().Info("Number of Customers : " + listOfCustomers.Count);                
 
                 foreach (var customer in listOfCustomers)
                 {
-                    MyLogger.GetInstance().Info("PROJECT-NAME : " + customer.PROJECT_NAME);
-                    Console.WriteLine($"PROJECT-NAME : " + customer.PROJECT_NAME);
+                    MyLogger.GetInstance().Info("PROJECT-NAME : " + customer.PROJECT_NAME);                   
 
                     var moduleConfig = customer.MODULES?.FirstOrDefault(m => m.MODULE_NAME == module);
                     if (moduleConfig == null) continue;
@@ -230,8 +228,7 @@ namespace emirates_ftp_app.Middleware.Inbound
                                     File Name    : {file.fileName}
                                     Start Time   : {fileStartTime:dd-MMM-yyyy HH:mm:ss}
                                     *************************************************************";
-
-                            Console.WriteLine(startLog);
+                           
                             MyLogger.GetInstance().Info(startLog);
                             Console.ResetColor();
 
@@ -249,8 +246,7 @@ namespace emirates_ftp_app.Middleware.Inbound
                                 continue;
                             }
 
-                            MyLogger.GetInstance().Info($"Download Success: {file.fileName}");
-                            Console.WriteLine($"Download Success: {file.fileName}");
+                            MyLogger.GetInstance().Info($"Download Success: {file.fileName}");                           
 
                             file.slNo = await oASNDao_.GenerateASNSlNo();
                             file.moduleType = "ASN - CUS TO EFS";
@@ -281,8 +277,7 @@ namespace emirates_ftp_app.Middleware.Inbound
                                 continue;
                             }
 
-                            MyLogger.GetInstance().Info("ASN Insert Success");
-                            Console.WriteLine("ASN Insert Success");
+                            MyLogger.GetInstance().Info("ASN Insert Success");                          
 
                             var procedureInput = new Model.Inbound.pro_client_import_model
                             {
@@ -295,14 +290,21 @@ namespace emirates_ftp_app.Middleware.Inbound
                             bool procedureSuccess = await oASNDao_.ExecASNImportProcedure(procedureInput);
 
                             if (procedureSuccess)
+                            {
                                 backupPath = await oFtp_.MoveFileToBackupFolder(customer, moduleConfig, file, credentials);
-                            else
-                                errorPath = await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);
+                                var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.fileName!, module, "COMPLETED");
+                                if (fileData != null)
+                                    emailRequests.Add(fileData);
+                            }
 
-                            var fileData = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.fileName!, module);
-                            if (fileData != null)
-                                emailRequests.Add(fileData);
-                            
+                            else
+                            {
+                                errorPath = await oFtp_.MoveFiletoErrorFolder(customer, moduleConfig, file, credentials);
+                                var fileDataerr = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.fileName!, module, "PENDING");
+                                if (fileDataerr != null)
+                                    emailRequests.Add(fileDataerr);
+
+                            }
 
                             // ====================================================
                             // END LOG
@@ -320,8 +322,7 @@ namespace emirates_ftp_app.Middleware.Inbound
                                     Duration     : {totalSeconds} Seconds
                                     Status       : SUCCESS
                                     *************************************************************";
-
-                            Console.WriteLine(endLog);
+                           
                             MyLogger.GetInstance().Info(endLog);
                             Console.ResetColor();
                         }
@@ -336,8 +337,7 @@ namespace emirates_ftp_app.Middleware.Inbound
                                 Error        : {ex.Message}
                                 Time         : {DateTime.Now:dd-MMM-yyyy HH:mm:ss}
                                 *************************************************************";
-
-                            Console.WriteLine(errorLog);
+                           
                             MyLogger.GetInstance().Error(errorLog);
                             Console.ResetColor();
 
@@ -351,17 +351,12 @@ namespace emirates_ftp_app.Middleware.Inbound
                     }
                 }
                 var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("ASN Creation Completed");
+                Console.ForegroundColor = ConsoleColor.Yellow;                
+                MyLogger.GetInstance().Info("ASN Creation Completed");
                 Console.ForegroundColor = previousColor;
             }
             catch (Exception ex)
             {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine($"Error in ASN Creation: {ex}");
-                Console.ForegroundColor = previousColor;
-
                 errors.Add($"Unhandled exception in ASN Creation: {ex.Message}");
                 MyLogger.GetInstance().Error("Error in ASN creation: " + ex);
             }

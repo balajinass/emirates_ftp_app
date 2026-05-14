@@ -22,7 +22,7 @@ namespace emirates_ftp_app.Model.Inbound.SalesOrderDao
         public string? CUSTOMER_ORDER_NO { get; set; } 
         public string? CUSTOMER_ORDER_LINE_NO { get; set; } 
         public string? PART_CODE { get; set; } 
-        public int ALLOCATED_QTY { get; set; }
+        public int? ALLOCATED_QTY { get; set; }
         public string? PART_BATCH_NO { get; set; } 
         public string? SERIAL_NO { get; set; } 
         public DateTime? EXPIRY_DATE { get; set; }

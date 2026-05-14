@@ -13,6 +13,6 @@ namespace emirates_ftp_app.Repository.Customer
         Task<List<web_wms_edi_config_model>> GetListofCustomer();
         Task<List<web_wms_edi_config_model>> GetListofCustomerOUTBOUND();
         Task<wms_edi_ftp_model> InsertEdiLog(web_wms_edi_config_model oCustomer_,web_wms_edi_module_config_model oModule_,input_request_model oFiles);
-        Task<email_request_model?> GetEdiFileAsEmailRequestAsync(string fileName,string module);
+        Task<email_request_model?> GetEdiFileAsEmailRequestAsync(string fileName,string module,string FileStatus);
     }
 }

@@ -83,6 +83,7 @@ namespace emirates_ftp_app.Repository.CommonFunctions
                 CsvReader csvReader = new CsvReader(streamReader, csvConfig);
 
                 listofCsv_ = csvReader.GetRecords<salesorder_csv_model>().ToList();
+                MyLogger.GetInstance().Info("CSV READ " + listofCsv_);
             }
             catch (Exception ex)
             {
@@ -147,8 +148,8 @@ namespace emirates_ftp_app.Repository.CommonFunctions
                 await foreach (var record in csv.GetRecordsAsync<asn_csv_model>())
                 {
                     listofCsv_.Add(record);
-                }
-                Console.WriteLine($"ReadCsvFileforASN Completed");
+                }               
+                MyLogger.GetInstance().Info("CSV READ " + listofCsv_);
             }
             catch (Exception ex)
             {
@@ -190,6 +191,7 @@ namespace emirates_ftp_app.Repository.CommonFunctions
                 {
                     listofCsv_.Add(record);
                 }
+                MyLogger.GetInstance().Info("CSV READ " + listofCsv_);
             }
             catch (Exception ex)
             {
@@ -230,6 +232,7 @@ namespace emirates_ftp_app.Repository.CommonFunctions
                 {
                     listofCsv_.Add(record);
                 }
+                MyLogger.GetInstance().Info("CSV READ " + listofCsv_);
             }
             catch (Exception ex)
             {

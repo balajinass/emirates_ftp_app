@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("emirates_ftp_app")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7cabd09452cd3302ae6dd0d40d54d5badab90936")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+909f836eaf4e020269cb72120220817b0406f7f4")]
 [assembly: System.Reflection.AssemblyProductAttribute("emirates_ftp_app")]
 [assembly: System.Reflection.AssemblyTitleAttribute("emirates_ftp_app")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
