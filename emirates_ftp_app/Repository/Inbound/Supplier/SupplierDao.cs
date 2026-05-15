@@ -167,7 +167,7 @@ namespace emirates_ftp_app.Repository.Inbound.Supplier
             try
             {
                 using var scope = _serviceProvider.CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<NassDbContext>();
+                var context = scope.ServiceProvider.GetRequiredService<PrimaryDbContext>();
 
                 var parameters = new[]
                         {
@@ -182,7 +182,7 @@ namespace emirates_ftp_app.Repository.Inbound.Supplier
                     parameters
                 );
 
-                MyLogger.GetInstance().Info("Values for Procedure EL_SUPPLIER_IMPORT - " + "  Company Code - " + oProInput_.FA_COMPANY_CODE + "  ,Branch Code -  +" + oProInput_.FA_BRANCH_CODE + "  ,Location Code - " + oProInput_.FA_LOCATION_CODE + "  ,SOURCE_SL_NO - " + oProInput_.FA_SL_NO);
+                MyLogger.GetInstance().Info("Values for Procedure EL_SUPPLIER_IMPORT - " + "  Company Code - " + oProInput_.FA_COMPANY_CODE + "  ,Branch Code - " + oProInput_.FA_BRANCH_CODE + "  ,Location Code - " + oProInput_.FA_LOCATION_CODE + "  ,SOURCE_SL_NO - " + oProInput_.FA_SL_NO);
 
                 MyLogger.GetInstance().Info("Procedure Executed Successfully - EL_SUPPLIER_IMPORT");
                 
