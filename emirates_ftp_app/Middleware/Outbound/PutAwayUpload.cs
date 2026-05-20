@@ -173,7 +173,8 @@ namespace emirates_ftp_app.Middleware.Outbound
                            
                             var fileDataerr = await oCommonManager_.GetEdiFileAsEmailRequestAsync(file.FILE_NAME!, module, "PENDING");
                             if (fileDataerr != null)
-                                emailRequests.Add(fileDataerr);
+                                emailRequests.Add(fileDataerr);                           
+
                         }
 
                         

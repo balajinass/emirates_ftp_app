@@ -320,7 +320,15 @@ namespace emirates_ftp_app.Repository.FtpConnection
             string retval = string.Empty;
             try
             {
-                string sLocalFullPath = string.Concat(oModule_.LOCAL_FILE_PATH + oFile.fileName);
+                string localfilepath = oModule_?.LOCAL_FILE_PATH!;
+                string sLocalFullPath = string.Concat(oModule_!.LOCAL_FILE_PATH + oFile.fileName);
+
+                // CREATE FOLDER IF NOT EXISTS
+                if (!Directory.Exists(localfilepath))
+                {
+                    Directory.CreateDirectory(localfilepath);
+                    MyLogger.GetInstance().Info($"Local folder created : {localfilepath}");
+                }
 
                 byte[] filecontents = File.ReadAllBytes(sLocalFullPath);
                 retval += await SendFileToBackupFolder(oCustomer_, oModule_, oFile, credentials, filecontents);
@@ -419,11 +427,21 @@ namespace emirates_ftp_app.Repository.FtpConnection
             string retval = string.Empty;
             try
             {
-                string sLocalFullPath = string.Concat(oModule_.LOCAL_FILE_PATH + oFiles.fileName);
+
+                string localfilepath = oModule_?.LOCAL_FILE_PATH!;
+
+                string sLocalFullPath = string.Concat(oModule_?.LOCAL_FILE_PATH + oFiles.fileName);
+
+                // CREATE FOLDER IF NOT EXISTS
+                if (!Directory.Exists(localfilepath))
+                {
+                    Directory.CreateDirectory(localfilepath);
+                    MyLogger.GetInstance().Info($"Local folder created : {localfilepath}");
+                }
 
                 byte[] filecontents = File.ReadAllBytes(sLocalFullPath);
-                retval += await SendFileToBackupFolder(oCustomer_, oModule_, oFiles, credentials, filecontents);
-                retval += DeleteSourceFile(oCustomer_, oModule_, oFiles, credentials);
+                retval += await SendFileToBackupFolder(oCustomer_, oModule_!, oFiles, credentials, filecontents);
+                retval += DeleteSourceFile(oCustomer_, oModule_!, oFiles, credentials);
                 return retval;
             }
             catch (Exception ex)
@@ -500,35 +518,66 @@ namespace emirates_ftp_app.Repository.FtpConnection
         #endregion
 
         #region FileContentMoveFtp
-        public async Task<bool> FileContentMoveFtp(bool success,string fileName, string fileContent,web_wms_edi_config_model oCustomer_,web_wms_edi_outbound_config oModule_,NetworkCredential credentials)
-    {
-        string localFullPath = Path.Combine(oModule_.LOCAL_FILE_PATH!, fileName);
-       
-        string host = oCustomer_.FTP_URL!.Replace("ftp://", "").TrimEnd('/');
-        string remotePath = Path.Combine(oModule_.FTP_FILE_PATH!, fileName).Replace("\\", "/");
-
-        try
+        public async Task<bool> FileContentMoveFtp(
+            bool success,
+            string fileName,
+            string fileContent,
+            web_wms_edi_config_model oCustomer_,
+            web_wms_edi_outbound_config oModule_,
+            NetworkCredential credentials)
         {
-            await File.WriteAllTextAsync(localFullPath, fileContent);
-           
-            using var ftpClient = new FtpClient(host, credentials.UserName, credentials.Password);
-            ftpClient.Config.DataConnectionType = FtpDataConnectionType.AutoPassive;
-            ftpClient.Connect();
-            
-            FtpStatus status = ftpClient.UploadFile(localFullPath, remotePath, FtpRemoteExists.Overwrite, true);
+            string localDirectory = oModule_.LOCAL_FILE_PATH!;
+            string localFullPath = Path.Combine(localDirectory, fileName);
 
-            if (status != FtpStatus.Success)
+            string host = oCustomer_.FTP_URL!
+                .Replace("ftp://", "")
+                .TrimEnd('/');
+
+            string remotePath = Path.Combine(oModule_.FTP_FILE_PATH!, fileName)
+                .Replace("\\", "/");
+
+            try
             {
+                // Create local directory if not exists
+                if (!Directory.Exists(localDirectory))
+                {
+                    Directory.CreateDirectory(localDirectory);
+                    MyLogger.GetInstance().Info($"Local folder created : {localDirectory}");
+                }
+
+                // Write file
+                await File.WriteAllTextAsync(localFullPath, fileContent);
+
+                using var ftpClient = new FtpClient(
+                    host,
+                    credentials.UserName,
+                    credentials.Password);
+
+                ftpClient.Config.DataConnectionType = FtpDataConnectionType.AutoPassive;
+
+                ftpClient.Connect();
+
+                FtpStatus status = ftpClient.UploadFile(
+                    localFullPath,
+                    remotePath,
+                    FtpRemoteExists.Overwrite,
+                    true);
+
+                if (status != FtpStatus.Success)
+                {
                     MyLogger.GetInstance().Info($"Failed to upload file: {fileName}");
                     return false;
-            }
-                MyLogger.GetInstance().Info($"File uploaded successfully: {fileName}");
-                if (File.Exists(localFullPath))
-            {
-                File.Delete(localFullPath);
-            }
+                }
 
-               success = true;
+                MyLogger.GetInstance().Info($"File uploaded successfully: {fileName}");
+
+                // Delete local file after upload
+                if (File.Exists(localFullPath))
+                {
+                    File.Delete(localFullPath);
+                }
+
+                success = true;
             }
             catch (Exception ex)
             {
@@ -536,7 +585,7 @@ namespace emirates_ftp_app.Repository.FtpConnection
                 success = false;
             }
 
-           return success;
+            return success;
         }
         #endregion
     }

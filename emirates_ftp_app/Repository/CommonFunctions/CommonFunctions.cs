@@ -384,49 +384,66 @@ namespace emirates_ftp_app.Repository.CommonFunctions
                 return "<p>No exception information available.</p>";
 
             var exceptionDetails = new StringBuilder();
+
             exceptionDetails.AppendLine($"<strong>Message:</strong> {ex.Message}<br><br>");
-            exceptionDetails.AppendLine($"<strong>Stack Trace:</strong><br>{ex.StackTrace}<br>");
+           
+            if (!string.IsNullOrWhiteSpace(ex.StackTrace))
+            {
+                exceptionDetails.AppendLine($"<strong>Stack Trace:</strong><br>{ex.StackTrace}<br>");
+            }
+
+            exceptionDetails.AppendLine($"<strong>Full Message:</strong><br>{ex.ToString()}<br>");
 
             var inner = ex.InnerException;
+
             while (inner != null)
             {
                 exceptionDetails.AppendLine("<hr>");
                 exceptionDetails.AppendLine("<strong>Inner Exception:</strong><br>");
                 exceptionDetails.AppendLine($"<strong>Message:</strong> {inner.Message}<br><br>");
-                exceptionDetails.AppendLine($"<strong>Stack Trace:</strong><br>{inner.StackTrace}<br>");
+               
+                if (!string.IsNullOrWhiteSpace(inner.StackTrace))
+                {
+                    exceptionDetails.AppendLine($"<strong>Stack Trace:</strong><br>{inner.StackTrace}<br>");
+                }
+                exceptionDetails.AppendLine($"<strong>Message:</strong> {inner.ToString()}<br><br>");
                 inner = inner.InnerException;
             }
 
             var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
             return $@"
-                    <!DOCTYPE html>
-                    <html lang='en'>
-                    <head>
-                    <meta charset='UTF-8'>
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                    <title>{methodName} - Error Notification</title>
-                    <style>
-                        body {{ font-family: Arial, sans-serif; background-color: #f4f4f4; margin:0; padding:0; }}
-                        .container {{ max-width: 600px; margin: 20px auto; background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding: 20px; }}
-                        h1 {{ color: #d9534f; font-size: 22px; margin-bottom: 10px; }}
-                        p {{ font-size: 16px; }}
-                        .details {{ background-color: #f8f8f8; border-left: 4px solid #d9534f; padding: 10px; margin: 15px 0; font-family: monospace; white-space: pre-wrap; }}
-                        .footer {{ font-size: 12px; color: #777; text-align: center; margin-top: 20px; }}
-                    </style>
-                    </head>
-                    <body>
-                    <div class='container'>
-                        <h1>Emirates_EDI_FTP_APP_Exception</h1>
-                        <h2>Error at {methodName}</h2>
-                        <p><strong>Timestamp:</strong> {timestamp}</p>
-                        <div class='details'>
-                            {exceptionDetails}
-                        </div>
-                        <div class='footer'>Automated message from Emirates EDI FTP. Do not reply.</div>
-                    </div>
-                    </body>
-                    </html>";
+        <!DOCTYPE html>
+        <html lang='en'>
+        <head>
+        <meta charset='UTF-8'>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <title>{methodName} - Error Notification</title>
+        <style>
+            body {{ font-family: Arial, sans-serif; background-color: #f4f4f4; margin:0; padding:0; }}
+            .container {{ max-width: 600px; margin: 20px auto; background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding: 20px; }}
+            h1 {{ color: #d9534f; font-size: 22px; margin-bottom: 10px; }}
+            p {{ font-size: 16px; }}
+            .details {{ background-color: #f8f8f8; border-left: 4px solid #d9534f; padding: 10px; margin: 15px 0; font-family: monospace; white-space: pre-wrap; }}
+            .footer {{ font-size: 12px; color: #777; text-align: center; margin-top: 20px; }}
+        </style>
+        </head>
+        <body>
+        <div class='container'>
+            <h1>Emirates_EDI_FTP_APP_Exception</h1>
+
+            <p><strong>Timestamp:</strong> {timestamp}</p>
+
+            <div class='details'>
+                {exceptionDetails}
+            </div>
+
+            <div class='footer'>
+                Automated message from NewAge Software & Solutions Pvt Ltd. Do not reply. Do not reply.
+            </div>
+        </div>
+        </body>
+        </html>";
         }
 
 
@@ -541,7 +558,7 @@ namespace emirates_ftp_app.Repository.CommonFunctions
 
                         <tr>
                         <td style='font-size:12px;color:#777;text-align:center;padding-top:20px;'>
-                        Automated message from New Age Software & Solutions Pvt Ltd. Do not reply.
+                        Automated message from NewAge Software & Solutions Pvt Ltd. Do not reply.
                         </td>
                         </tr>
 
