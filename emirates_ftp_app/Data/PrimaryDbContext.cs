@@ -23,13 +23,14 @@ namespace emirates_ftp_app.Data
         public DbSet<wms_el_so_cancel_import> WMS_EL_SO_CANCEL_IMPORT { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // WMS_EDI_FTP
             modelBuilder.Entity<wms_edi_ftp_model>(entity =>
             {
                 entity.ToTable("WMS_EDI_FTP");
                 entity.HasKey(e => e.SL_NO);
-            });
 
+                entity.Property(e => e.FILE_CONTENT)
+                      .HasColumnType("CLOB"); 
+            });
             //// WMS_EDI_FTP1
             //modelBuilder.Entity<wms_edi_ftp_model>(entity =>
             //{

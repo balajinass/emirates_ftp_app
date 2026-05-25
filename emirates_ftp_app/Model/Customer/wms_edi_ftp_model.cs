@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace emirates_ftp_app.Model.Customer
@@ -13,7 +14,9 @@ namespace emirates_ftp_app.Model.Customer
         public DateTime? FILE_UPLOAD_TIME { get; set; } 
         public DateTime? FILE_WRITE_TIME { get; set; } 
         public string? FILE_NAME { get; set; } 
-        public string? FILE_TYPE { get; set; } 
+        public string? FILE_TYPE { get; set; }
+
+        [Column(TypeName = "CLOB")]
         public string? FILE_CONTENT { get; set; } 
         public string? REFERENCE_ID { get; set; } 
         public string? FILE_STATUS { get; set; } 
