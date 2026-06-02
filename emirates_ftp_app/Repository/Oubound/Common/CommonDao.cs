@@ -47,6 +47,11 @@ namespace emirates_ftp_app.Repository.Oubound.Common
                             FILE_NAME = f.FILE_NAME,
                             FILE_CONTENT = f.FILE_CONTENT,
                             SL_NO = f.SL_NO,
+                            FILE_UPLOAD_TIME=f.FILE_UPLOAD_TIME,
+                            FILE_TYPE = f.FILE_TYPE,
+                            FILE_STATUS = f.FILE_STATUS,
+                            TRANSACTION_TIME = f.TRANSACTION_TIME,
+                            PRIMARY_COMPANY = f.PRIMARY_COMPANY,
                         })
                         .ToListAsync();
 
@@ -67,30 +72,44 @@ namespace emirates_ftp_app.Repository.Oubound.Common
         #endregion
 
         #region UpdateFileStatus
-        public async Task UpdateFileStatus(string fileName,string PrimaryCompany)
+        public async Task UpdateFileStatus(string fileName, string primaryCompany)
         {
             try
             {
                 using var scope = _serviceProvider.CreateScope();
                 var dbContext = scope.ServiceProvider.GetRequiredService<PrimaryDbContext>();
 
-                //int updatedCount = await dbContext.WMS_EDI_FTP
-                //    .Where(f => f.FILE_NAME == fileName && f.FILE_STATUS == "NEW" && f.PRIMARY_COMPANY == PrimaryCompany)
-                       int updatedCount = await dbContext.WMS_EDI_FTP
-                    .Where(f => f.FILE_NAME == fileName && f.FILE_STATUS == "NEW" && f.PRIMARY_COMPANY == PrimaryCompany)
-                    .ExecuteUpdateAsync(f => f.SetProperty(p => p.FILE_STATUS, "PROCESSED"));
+                MyLogger.GetInstance().Info($"WMS_EDI_FTP Updating Status | FILE_NAME : {fileName} | PRIMARY_COMPANY : {primaryCompany} | FILE_STATUS : PROCESSED | FILE_WRITE_TIME : {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
 
-                Console.WriteLine($"{updatedCount} file(s) with name {fileName} marked as PROCESSED.");
-                MyLogger.GetInstance().Info($"{updatedCount} file(s) with name {fileName} marked as PROCESSED.");
+                int updatedCount = await dbContext.WMS_EDI_FTP.Where(f => f.FILE_NAME == fileName
+                  && f.FILE_STATUS == "NEW" 
+                  && f.PRIMARY_COMPANY == primaryCompany).ExecuteUpdateAsync(f => f.SetProperty(p => p.FILE_STATUS, "PROCESSED").SetProperty(p => p.FILE_WRITE_TIME, DateTime.Now));
+
+                if (updatedCount > 0)
+                {
+                    MyLogger.GetInstance().Info(
+                        $"WMS_EDI_FTP Status Updated Successfully | FILE_NAME : {fileName} | PRIMARY_COMPANY : {primaryCompany} | RECORDS_UPDATED : {updatedCount}"
+                    );                  
+                    MyLogger.GetInstance().Info(
+                        $"************************************************************");                
+
+                }
+                else
+                {
+                    MyLogger.GetInstance().Warning(
+                        $"WMS_EDI_FTP No Records Found To Update | FILE_NAME : {fileName} | PRIMARY_COMPANY : {primaryCompany}"
+                    );                  
+                    MyLogger.GetInstance().Info(
+                        $"************************************************************");                 
+                }
             }
             catch (Exception ex)
             {
-                var previousColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine($"Error updating status for file {fileName}: {ex}");
-                Console.ForegroundColor = previousColor;
-
-                MyLogger.GetInstance().Error($"Error updating status for file {fileName}: {ex}");                
+                MyLogger.GetInstance().Error(
+                    $"WMS_EDI_FTP Error Updating Status | FILE_NAME : {fileName} | PRIMARY_COMPANY : {primaryCompany} | ERROR : {ex.Message}"
+                );
+                MyLogger.GetInstance().Info(
+                        $"************************************************************");              
             }
         }
         #endregion

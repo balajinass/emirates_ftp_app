@@ -544,7 +544,7 @@ namespace emirates_ftp_app.Repository.FtpConnection
                     Directory.CreateDirectory(localDirectory);
                     MyLogger.GetInstance().Info($"Local folder created : {localDirectory}");
                 }
-
+                MyLogger.GetInstance().Info($"LocalFolder : " + localDirectory);
                 // Write file
                 await File.WriteAllTextAsync(localFullPath, fileContent);
 
@@ -569,8 +569,7 @@ namespace emirates_ftp_app.Repository.FtpConnection
                     return false;
                 }
 
-                MyLogger.GetInstance().Info($"File uploaded successfully: {fileName}");
-
+                MyLogger.GetInstance().Info($"File uploaded successfully "+ " FTP - " + remotePath);
                 // Delete local file after upload
                 if (File.Exists(localFullPath))
                 {
@@ -578,6 +577,10 @@ namespace emirates_ftp_app.Repository.FtpConnection
                 }
 
                 success = true;
+                if (success)
+                {
+                    MyLogger.GetInstance().Info($"Local file deleted : " + localFullPath);
+                }
             }
             catch (Exception ex)
             {

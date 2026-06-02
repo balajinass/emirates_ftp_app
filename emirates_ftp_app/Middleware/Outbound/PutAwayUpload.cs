@@ -145,14 +145,26 @@ namespace emirates_ftp_app.Middleware.Outbound
                     var credentials = new NetworkCredential(customer.FTP_USERNAME, customer.FTP_PASSWORD);
 
                     var filesToProcess = await oComm_.GetFileContent(customer, module);
+
+                    MyLogger.GetInstance().Info($"PROJECT-NAME: {customer.PROJECT_NAME} | MODULE: {module} | Total Files to Process from WMS_EDI_FTP: {filesToProcess?.Count ?? 0}");
+
                     if (filesToProcess == null || filesToProcess.Count == 0)
                     {
                         MyLogger.GetInstance().Info($"{module} - No files to process for PROJECT-NAME: {customer.PROJECT_NAME}");                       
                         continue;
                     }
 
+                    int fileCount = 0;
                     foreach (var file in filesToProcess)
                     {
+                        fileCount++;
+
+                        MyLogger.GetInstance().Info($"*************** Processing File - {fileCount} of {filesToProcess.Count} ***************");
+                        MyLogger.GetInstance().Info($"SLNO : {file.SL_NO} | " + $"FILE_NAME : {file.FILE_NAME} | " + $"FILE_UPLOAD_TIME : {file.FILE_UPLOAD_TIME} | " +
+                           $"FILE_TYPE : {file.FILE_TYPE} | " + $"FILE_STATUS : {file.FILE_STATUS} | " +
+                           $"TRANSACTION_TIME : {file.TRANSACTION_TIME} | " + $"PRIMARY_COMPANY : {file.PRIMARY_COMPANY}");
+                        MyLogger.GetInstance().Info($"FILE_NAME : {file.FILE_NAME} : " + " Generated from FILE_CONTENT");
+
                         bool success = await oFtp_.FileContentMoveFtp(false, file.FILE_NAME!, file.FILE_CONTENT!, customer, moduleConfig, credentials);
 
                         if (success)

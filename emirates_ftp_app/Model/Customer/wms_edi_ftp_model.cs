@@ -21,7 +21,7 @@ namespace emirates_ftp_app.Model.Customer
         public string? REFERENCE_ID { get; set; } 
         public string? FILE_STATUS { get; set; } 
         public DateTime? FILE_DOWNLOAD_TIME { get; set; } 
-        public string? TRANSACTION_TIME { get; set; } 
+        public DateTime? TRANSACTION_TIME { get; set; } 
         public DateTime? FILE_CREATED_TIME { get; set; } 
         public string? IN_OUT { get; set; } 
         public string? PO_LPO { get; set; } 
@@ -39,5 +39,8 @@ namespace emirates_ftp_app.Model.Customer
         public string? FILE_CONTENT { get; set; }
         public string? FILE_STATUS { get; set; }
         public string? FILE_TYPE { get; set; }
+        public DateTime? FILE_UPLOAD_TIME { get; set; }
+        public DateTime? TRANSACTION_TIME { get; set; }
+        public string? PRIMARY_COMPANY { get; set; }
     }
 }

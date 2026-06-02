@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Reflection;
 using System.Text;
 //using static System.Net.WebRequestMethods;
@@ -346,8 +347,13 @@ namespace emirates_ftp_app.Repository.CommonFunctions
                     to = _config["EmailSettings:ExceptionTo"]!;
                 }
 
+                //var urltoken =await GetEmailTokenAsync();
+
                 var token = _config["ApiSettings:Token"];
                 var url = _config["ApiSettings:BaseUrl"];
+
+                //client.DefaultRequestHeaders.Authorization =
+                //    new AuthenticationHeaderValue("Bearer", urltoken);
 
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token);
@@ -378,6 +384,29 @@ namespace emirates_ftp_app.Repository.CommonFunctions
             }
 
         }
+
+        #region under testing for Call seperate token
+        //private async Task<string> GetEmailTokenAsync()
+        //{
+        //    using var client = new HttpClient();
+
+        //    var tokenUrl = _config["ApiSettings:TokenUrl"];
+           
+        //    var request = new TokenRequest
+        //    {
+        //        clientID = _config["ClientID"],
+        //        saasID = _config["SaasID"]
+        //    };
+
+        //    var response = await client.PostAsJsonAsync(tokenUrl, request);
+
+        //    response.EnsureSuccessStatusCode();
+
+        //    var result = await response.Content.ReadFromJsonAsync<TokenResponse>();
+
+        //    return result?.Details?.Token;
+        //}
+        #endregion
         public async Task<string> GenerateExceptionHtml(string methodName, Exception ex)
         {
             if (ex == null)
@@ -571,6 +600,5 @@ namespace emirates_ftp_app.Repository.CommonFunctions
                         </body>
                         </html>";
         }
-
     }
 }
