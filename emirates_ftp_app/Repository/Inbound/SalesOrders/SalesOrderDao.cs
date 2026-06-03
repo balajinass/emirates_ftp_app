@@ -263,7 +263,8 @@ namespace emirates_ftp_app.Repository.Inbound.SalesOrders
                             DIMENTION = item?.DIMENTION,
                             VALUE = item?.VALUE,
                             COUNTRY_CODE = item?.COUNTRYCODE,
-                            CUST_CURRENCY_CODE = item?.CUSTCURRENCYCODE
+                            CUST_CURRENCY_CODE = item?.CUSTCURRENCYCODE,
+                            EMAIL = item?.EMAIL,
                         };
 
                         entities.Add(entity);
