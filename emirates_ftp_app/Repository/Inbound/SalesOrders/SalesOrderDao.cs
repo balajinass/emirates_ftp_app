@@ -158,8 +158,14 @@ namespace emirates_ftp_app.Repository.Inbound.SalesOrders
                 }
             }
             catch (Exception ex)
-            {               
-                MyLogger.GetInstance().Error("Error in WMS_EL_CLIENT_IMPORT;+" + ex.ToString());
+            {
+                MyLogger.GetInstance().Error("Error in WMS_EL_CLIENT_IMPORT: " + ex.Message);
+
+                if (ex.InnerException != null)
+                {
+                    MyLogger.GetInstance().Error("Inner Exception: " + ex.InnerException.Message);
+                }
+
                 return false;
             }
         }
