@@ -38,10 +38,13 @@ namespace emirates_ftp_app.Repository.Customer
                 using (var scope = _serviceProvider.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<NassDbContext>();
+
+                    //5,6,7,8 -- FTP customers in Prod                   
                     return await context.WEB_WMS_EDI_CONFIG
-                                        .Where(c => c.LOV_STATUS == "ACTIVE")
-                                        .Include(c => c.MODULES!.Where(m => m.LOV_STATUS == "DISPLAY"))
-                                        .ToListAsync();
+                                    .Where(c => c.LOV_STATUS == "ACTIVE"
+                                             && new[] { "5", "6", "7", "8" }.Contains(c.PROJECT_ID))
+                                    .Include(c => c.MODULES!.Where(m => m.LOV_STATUS == "ACTIVE"))
+                                    .ToListAsync();
                 }
             }
             catch (Exception ex)
@@ -61,9 +64,12 @@ namespace emirates_ftp_app.Repository.Customer
                 using var scope = _serviceProvider.CreateScope();
                 var context = scope.ServiceProvider.GetRequiredService<NassDbContext>();
 
+                //5,6,7,8 -- FTP customers in Prod
                 var result = await context.WEB_WMS_EDI_CONFIG
-                    .Where(c => c.LOV_STATUS == "ACTIVE").Select(c => new web_wms_edi_config_model
-                    {
+                     .Where(c => c.LOV_STATUS == "ACTIVE"
+                              && new[] { "5", "6", "7", "8" }.Contains(c.PROJECT_ID))
+                     .Select(c => new web_wms_edi_config_model
+                     {
                         PROJECT_ID = c.PROJECT_ID,
                         PROJECT_NAME = c.PROJECT_NAME,
                         CREATE_USER = c.CREATE_USER,
@@ -87,16 +93,15 @@ namespace emirates_ftp_app.Repository.Customer
                         ERROR_EMAIL = c.ERROR_EMAIL,
                         LOV_STATUS = c.LOV_STATUS,
 
-                        // Filter only DISPLAY rows in OUTBOUND
+                        // Filter only ACTIVE rows in OUTBOUND
                         OUTBOUND = c.OUTBOUND!
-                                     .Where(o => o.LOV_STATUS == "DISPLAY")
+                                     .Where(o => o.LOV_STATUS == "ACTIVE")
                                      .ToList(),
-
-                        // If you also want MODULES filtered by DISPLAY:
-                        MODULES = c.MODULES!
-                                     .Where(m => m.LOV_STATUS == "DISPLAY")
-                                     .ToList()
-                    })
+                         // MODULES = InBound Modules table if need enable it
+                         //MODULES = c.MODULES!
+                         //             .Where(m => m.LOV_STATUS == "ACTIVE")
+                         //             .ToList()
+                     })
                     .ToListAsync();
 
                 return result;

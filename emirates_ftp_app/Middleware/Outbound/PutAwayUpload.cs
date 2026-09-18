@@ -137,10 +137,18 @@ namespace emirates_ftp_app.Middleware.Outbound
                 {
                     MyLogger.GetInstance().Info("PROJECT-NAME: " + customer.PROJECT_NAME);
 
-                    if (customer.OUTBOUND == null) continue;
+                    if (customer.OUTBOUND == null || customer.OUTBOUND.Count == 0)
+                    {
+                        MyLogger.GetInstance().Info($"OUTBOUND Table - WEB_WMS_EDI_OUTBOUND_CONFIG not found/inactive for module: {module}, " + $" for Customer Name: {customer.PROJECT_NAME}, Id: {customer.PROJECT_ID}");
+                        continue;
+                    }
 
                     var moduleConfig = customer.OUTBOUND.FirstOrDefault(m => m.MODULE_NAME == module);
-                    if (moduleConfig == null) continue;
+                    if (moduleConfig == null)
+                    {
+                        MyLogger.GetInstance().Info($"OUTBOUND Table - WEB_WMS_EDI_OUTBOUND_CONFIG not found/inactive for module: {module}, " + $" for Customer Name: {customer.PROJECT_NAME}, Id: {customer.PROJECT_ID}");
+                        continue;
+                    }
 
                     var credentials = new NetworkCredential(customer.FTP_USERNAME, customer.FTP_PASSWORD);
 

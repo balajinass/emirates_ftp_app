@@ -240,7 +240,12 @@ namespace emirates_ftp_app.Middleware.Inbound
                         MyLogger.GetInstance().Info("PROJECT-NAME: " + customer.PROJECT_NAME);                       
 
                         var customerModule = customer.MODULES?.FirstOrDefault(m => m.MODULE_NAME == module);
-                        if (customerModule == null) continue;
+                        if (customerModule == null) 
+                        {
+                            MyLogger.GetInstance().Info($"Inbound Table - WEB_WMS_EDI_MODULE_CONFIG not found/inactive for module: {module}, " + $" for Customer Name: {customer.PROJECT_NAME}, Id: {customer.PROJECT_ID}");
+                            continue;
+                        }
+                        
 
                         var credentials = new NetworkCredential(customer.FTP_USERNAME, customer.FTP_PASSWORD);
                         var listOfFiles = await oFtp_.GetFilesfromFTP(customer, customerModule, credentials, module);
